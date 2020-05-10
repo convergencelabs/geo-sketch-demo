@@ -25,7 +25,7 @@ export const RemoteStateLayer = (props: IRemoteStateLayerProps<any>) => {
 
   useEffect(() => {
     const l = new esri.layers.GraphicsLayer();
-    props.map.add(l);
+    props.map.add(l, props.map.layers.length);
     setLayer(l);
 
     return () => {

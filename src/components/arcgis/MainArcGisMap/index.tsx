@@ -83,9 +83,9 @@ export const MainArcGisMap = observer(() => {
   return (
     <React.Fragment>
       <div className={styles.mainMap} ref={mapRef}/>
+      {sketchWidget}
       {pointerLayer}
       {latLongWidget}
-      {sketchWidget}
     </React.Fragment>
   );
 });
