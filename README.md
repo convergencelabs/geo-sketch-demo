@@ -64,4 +64,15 @@ The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-v
+
+
+## Support
+[Convergence Labs](https://convergencelabs.com) provides several different channels for support:
+
+- Please use the [Discourse Forum](https://forum.convergence.io) for general and technical questions, so the whole community can benefit.
+- For paid dedicated support or custom development services, [contact us](https://convergence.io/contact-sales/) directly.
+- Chat with us on the [Convergence Public Slack](https://slack.convergence.io)
+- Email <support@convergencelabs.com> for all other inquiries.
+
+## License
+The Convergence GeoSketch Demo is licensed under the [MIT](LICENSE) license. Refer to the [LICENSE](LICENSE) for the specific terms and conditions of the license.
