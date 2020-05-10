@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided
+ * along with this file, typically located in the "LICENSE" file, which is part
+ * of this source code package. Alternatively, see
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+.opened .map {
+    position: fixed;
+    height: 200px;
+    width: 200px;
+    bottom: 0;
+    right: 0;
+
+    border: 1px solid black;
+}
+
+.closed .map {
+    visibility: hidden;
+}
+
+.toggle {
+    position: fixed;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid darkgray;
+    z-index: 10000;
+
+    cursor: pointer;
+}
+
+.opened .toggle {
+    bottom: 184px;
+    right: 174px;
+    transform: rotate(-45deg);
+}
+
+.closed .toggle {
+    bottom: -3px;
+    right: -13px;
+    transform: rotate(-225deg);
+}
+
+.arrow {
+    position: relative;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.toggle:hover .arrow {
+    border-color: #0093ff;
+}
+
+.opened .arrow {
+    top: 0;
+    left: -5px;
+    transform: rotate(45deg);
+}
+
+.closed .arrow {
+    top: 0;
+    left: -5px;
+    transform: rotate(45deg);
+}

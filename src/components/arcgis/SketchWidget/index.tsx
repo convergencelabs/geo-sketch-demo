@@ -1,0 +1,191 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided
+ * along with this file, typically located in the "LICENSE" file, which is part
+ * of this source code package. Alternatively, see
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+import {useEffect} from 'react';
+import MapView from "esri/views/MapView";
+import {esri} from "../../../utils/ArcGisLoader";
+import {useStores} from "../../../stores/stores";
+import {
+  ArrayInsertEvent,
+  IConvergenceEvent,
+  RealTimeArray,
+  RealTimeElement,
+  RealTimeObject
+} from "@convergence/convergence";
+import {GraphicAdapter} from "../../../utils/GraphicAdapter";
+import GraphicsLayer from "esri/layers/GraphicsLayer";
+import Graphic from "esri/Graphic"
+
+export interface ISketchWidgetProps {
+  view: MapView;
+}
+
+export const SketchWidget = (props: ISketchWidgetProps) => {
+  const {modelStore} = useStores();
+  const {view} = props;
+
+  useEffect(() => {
+    const layer = new esri.layers.GraphicsLayer();
+    const sketch = new esri.widgets.Sketch({
+      layer: layer,
+      view: view,
+      creationMode: "update"
+    });
+
+    const {model} = modelStore;
+    if (model !== null && view) {
+      view.ui.add(sketch, "top-right");
+      view.map.add(layer);
+
+      const bindGraphic = (layer: GraphicsLayer, graphic: Graphic, rte: RealTimeObject) => {
+        GraphicAdapter.bind({
+          graphic,
+          realTimeObject: rte,
+          onTransform: (g) => {
+            if (sketch.updateGraphics.includes(g) &&  (sketch.viewModel as any).activeComponent) {
+              (sketch.viewModel as any).activeComponent.refresh();
+            }
+
+            // this._selectionManager!.updateGraphic(g);
+          },
+          onVertexChange: (g) => {
+            if (sketch.updateGraphics.includes(g) &&  (sketch.viewModel as any).activeComponent) {
+              (sketch.viewModel as any).activeComponent.refresh();
+            }
+
+            // this._selectionManager!.updateGraphic(g);
+          },
+          onRemove: (g) => {
+            layer.remove(g);
+            if (sketch.updateGraphics.includes(g)) {
+              sketch.updateGraphics.remove(g);
+              if (sketch.updateGraphics.length > 0  &&  (sketch.viewModel as any).activeComponent) {
+                const activeComponent = (sketch.viewModel as any).activeComponent;
+                activeComponent.graphics = (activeComponent.graphics as any[]).filter(a => a !== g);
+                activeComponent.refresh();
+              } else {
+                sketch.cancel();
+              }
+            }
+
+            // this._selectionManager!.removeGraphic(g);
+          }
+        });
+      };
+
+      const addFeature = (feature: RealTimeObject, layer: GraphicsLayer) => {
+        const graphic = esri.Graphic.fromJSON(feature.toJSON());
+        bindGraphic(layer, graphic, feature);
+        layer.add(graphic);
+      };
+
+      const features = model.elementAt("features") as RealTimeArray;
+
+      features.forEach((f: RealTimeElement) => {
+        addFeature(f as RealTimeObject, layer);
+      });
+
+      features.on(RealTimeArray.Events.INSERT, (e: IConvergenceEvent) => {
+        const event = e as ArrayInsertEvent;
+        addFeature(event.value as RealTimeObject, layer);
+      });
+
+
+      sketch.on("create", e => {
+        if (e.state === "complete") {
+          const json = e.graphic.toJSON();
+          delete json["popupTemplate"];
+          const rte = features.push(json);
+          bindGraphic(layer, e.graphic, rte as RealTimeObject);
+        }
+      });
+
+      sketch.on("delete", e => {
+        e.graphics.forEach(graphic => {
+          GraphicAdapter.getAdapter(graphic).remove();
+        });
+      });
+
+      sketch.on("undo", e => {
+        if (e.tool === "move" || e.tool === "reshape" || e.tool === "transform") {
+          e.graphics.forEach(g => {
+            GraphicAdapter.getAdapter(g).setGeometry(g.geometry);
+          });
+        }
+      });
+
+      sketch.on("redo", e => {
+        if (e.tool === "move" || e.tool === "reshape" || e.tool === "transform") {
+          e.graphics.forEach(g => {
+            GraphicAdapter.getAdapter(g).setGeometry(g.geometry);
+          });
+        }
+      });
+
+      sketch.on("update", e => {
+        if (e.state === "active") {
+          switch (e.toolEventInfo.type) {
+            case "move":
+            case "rotate":
+            case "scale":
+              e.graphics.forEach(g => {
+                GraphicAdapter.getAdapter(g).setGeometry(g.geometry);
+              });
+              break;
+            case "reshape": {
+              // Note you can only reshape one graphic at a time.
+              const mover = (e.toolEventInfo as any).mover;
+              const pathIndex = mover.attributes.pathIndex;
+              const pointIndex = mover.attributes.pointIndex;
+              const graphic = e.graphics[0];
+              const g = graphic.geometry as any;
+              const comp = (g.rings || g.paths) as number[][][];
+              const point = comp[pathIndex][pointIndex];
+              GraphicAdapter.getAdapter(graphic).updateVertex(pathIndex, pointIndex, {
+                x: point[0],
+                y: point[1]
+              });
+              break;
+            }
+            case "vertex-add": {
+              // Note you can only add vertices to one graphic at a time.
+              const vertices = e.toolEventInfo.vertices.map(vertex => {
+                const coords = vertex.coordinates as any as number[];
+                return {
+                  segmentIndex: vertex.componentIndex,
+                  pointIndex: vertex.vertexIndex,
+                  point: {x: coords[0], y: coords[1]}}
+              });
+
+              GraphicAdapter.getAdapter(e.graphics[0]).addVertices(vertices);
+              break;
+            }
+            case "vertex-remove": {
+              // Note you can only remove vertices to one graphic at a time.
+              const vertices = e.toolEventInfo.vertices.map(vertex => {
+                return {segmentIndex: vertex.componentIndex, pointIndex: vertex.vertexIndex}
+              });
+              GraphicAdapter.getAdapter(e.graphics[0]).deleteVertices(vertices);
+            }
+          }
+        }
+      });
+    }
+
+    return () => {
+      view.map.remove(layer);
+      view.ui.remove(sketch);
+    }
+    // eslint-disable-next-line
+  }, [view]);
+
+  return null;
+};

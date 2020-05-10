@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided
+ * along with this file, typically located in the "LICENSE" file, which is part
+ * of this source code package. Alternatively, see
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+import React from 'react';
+import Graphic from "esri/Graphic";
+import GraphicsLayer from "esri/layers/GraphicsLayer";
+import {esri} from "../../../utils/ArcGisLoader";
+import {RemoteStateGraphic} from "../RemoteStateGraphic";
+import {RemoteViewport} from "../../../models/RemoteViewport";
+import {colorAssigner} from "../../../utils/color-util";
+
+export interface IRemoteViewportGraphicProps {
+  layer: GraphicsLayer;
+  viewport: RemoteViewport;
+}
+
+export const RemoteViewportGraphic = (props: IRemoteViewportGraphicProps) => {
+  const {viewport, layer} = props;
+  return <RemoteStateGraphic
+    layer={layer}
+    item={viewport}
+    create={createViewport}
+    update={(viewport: RemoteViewport, graphic: Graphic) => {
+      graphic.geometry = new esri.geometry.Extent({...viewport.extent, spatialReference: {
+          wkid: 102100
+        }});
+    }}
+  />;
+};
+
+function createViewport(viewport: RemoteViewport): Graphic {
+  const geometry = new esri.geometry.Extent({...viewport.extent, spatialReference: {
+      wkid: 102100
+    }});
+
+  const {r, g, b} = colorAssigner.getColor(viewport.sessionId);
+  const symbol = new esri.symbols.SimpleFillSymbol({
+    outline: {
+      width: 1,
+      style: "solid",
+      color: [r, g, b, 0.8]
+    },
+    color: [r, g, b, 0.15]
+  });
+  return new esri.Graphic({geometry, symbol});
+}
+
+

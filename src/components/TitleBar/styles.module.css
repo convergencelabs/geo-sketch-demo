@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided
+ * along with this file, typically located in the "LICENSE" file, which is part
+ * of this source code package. Alternatively, see
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+.titleBar {
+    padding: 8px;
+    border-bottom: 1px solid darkgray;
+
+    display: flex;
+    align-items: center;
+}
+
+.titleBar a {
+    text-decoration: none;
+}
+
+.logo {
+    width: 40px;
+}
+
+.title {
+    margin-left: 20px;
+    flex: 1;
+    font-family: "Century Gothic ", sans-serif;
+    color: #005492;
+    font-size: 20px;
+}
+
+.share {
+    margin-right: 20px;
+}
+
+.share > * {
+    color: #005492;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.share > *:hover {
+    color: #378faa;
+}
