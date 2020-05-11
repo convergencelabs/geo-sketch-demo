@@ -13,3 +13,11 @@
     flex: 1;
     position: relative;
 }
+
+
+.mainMap:active {
+    outline: none;
+}
+.mainMap:global(.esri-view) :global(.esri-view-surface--inset-outline:focus::after) {
+    outline: none !important;
+}

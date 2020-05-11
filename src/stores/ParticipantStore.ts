@@ -17,12 +17,16 @@ import {
 } from "@convergence/convergence";
 import {action, observable} from "mobx";
 import {GeoSketchSessionUser} from "../models/GeoSketchSessionUser";
+import {ParticipantAction} from "../models/ParticipantAction";
 
 export class ParticipantStore {
   private _activity: Activity | null = null;
 
   @observable
   public participants: Map<string, GeoSketchSessionUser> = new Map();
+
+  @observable
+  public participantAction: ParticipantAction | null = null;
 
   @action
   public setActivity(activity: Activity): void {
@@ -42,6 +46,11 @@ export class ParticipantStore {
   }
 
   @action
+  public setParticipantAction(action: ParticipantAction | null): void {
+    this.participantAction = action;
+  }
+
+  @action
   public participantJoined(p: ActivityParticipant): void {
     const participant = new GeoSketchSessionUser(p.user, p.sessionId, p.local);
     this.participants.set(participant.sessionId, participant);
@@ -50,5 +59,8 @@ export class ParticipantStore {
   @action
   public participantLeft(sessionId: string): void {
     this.participants.delete(sessionId);
+    if (this.participantAction !== null && this.participantAction.participant.sessionId === sessionId) {
+      this.participantAction = null;
+    }
   }
 }

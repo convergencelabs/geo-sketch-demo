@@ -19,11 +19,13 @@ import {LatLongWidget} from "../LatLongWidget";
 import {SketchWidget} from "../SketchWidget";
 import {useStores} from "../../../stores/stores";
 import {observer} from "mobx-react";
+import {ParticipantActionType} from "../../../models/ParticipantAction";
 
 export const MainArcGisMap = observer(() => {
-  const { pointerStore, viewportStore } = useStores();
+  const {pointerStore, viewportStore, participantStore} = useStores();
   const mapRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<MapView | null>(null);
+  const [previousExtent, setPreviousExtent] = useState<any>(null);
 
   useEffect(() => {
     const map = new esri.Map({
@@ -71,14 +73,51 @@ export const MainArcGisMap = observer(() => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (!view) {
+      return;
+    }
+
+    // console.log(participantStore.participantAction);
+
+    if (participantStore.participantAction !== null) {
+      const remoteViewport = viewportStore.remoteStateMap.get(participantStore.participantAction.participant.sessionId);
+
+      if (participantStore.participantAction.actionType === ParticipantActionType.PREVIEW && previousExtent === null) {
+        setPreviousExtent(view.extent.toJSON());
+      }
+
+      if (remoteViewport) {
+        const extent = {
+          ...remoteViewport.extent, spatialReference: {
+            wkid: 102100
+          }
+        };
+        console.log("going to: " + JSON.stringify(extent));
+        view.extent = new esri.geometry.Extent(extent);
+      } else {
+        console.log("coulndt fine vp");
+      }
+    } else if (previousExtent) {
+      const extent = {
+        ...previousExtent, spatialReference: {
+          wkid: 102100
+        }
+      };
+      console.log("going back to: " + JSON.stringify(extent));
+      view.extent = new esri.geometry.Extent(extent);
+      setPreviousExtent(null);
+    }
+  }, [participantStore.participantAction, view, viewportStore.remoteState]);
+
   const pointerLayer = view !== null ?
     <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/> : null;
 
   const latLongWidget = view !== null ?
-    <LatLongWidget position={pointerStore.localState} /> : null;
+    <LatLongWidget position={pointerStore.localState}/> : null;
 
   const sketchWidget = view !== null ?
-    <SketchWidget view={view} /> : null;
+    <SketchWidget view={view}/> : null;
 
   return (
     <React.Fragment>

@@ -12,7 +12,7 @@
 import {DomainUser} from "@convergence/convergence";
 
 export class GeoSketchSessionUser {
-  constructor(public readonly user: DomainUser, public readonly sessionId: string, local: boolean) {
+  constructor(public readonly user: DomainUser, public readonly sessionId: string, public local: boolean) {
     Object.freeze(this);
   }
 }

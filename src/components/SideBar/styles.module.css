@@ -66,6 +66,8 @@
     padding: 4px;
 
     transform: rotate(130deg);
+
+    z-index: 10000;
 }
 
 .sideBarOpen .arrow {

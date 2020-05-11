@@ -20,6 +20,10 @@
     border-right: none;
 }
 
+.opened .map:global(.esri-view) :global(.esri-view-surface--inset-outline:focus::after) {
+    outline: none !important;
+}
+
 .closed .map {
     visibility: hidden;
 }

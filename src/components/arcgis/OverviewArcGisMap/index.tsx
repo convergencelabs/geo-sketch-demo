@@ -37,7 +37,7 @@ export const OverviewArcGisMap = observer(() => {
 
     // The only way to disable navigation is to block the events.
     // So we disable the lot of them here.
-    
+
     view.on("drag", function(event) {
       event.stopPropagation();
     });
