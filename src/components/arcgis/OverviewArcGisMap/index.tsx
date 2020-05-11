@@ -35,6 +35,37 @@ export const OverviewArcGisMap = observer(() => {
 
     view.ui.components = [];
 
+    // The only way to disable navigation is to block the events.
+    // So we disable the lot of them here.
+    
+    view.on("drag", function(event) {
+      event.stopPropagation();
+    });
+
+    view.on("key-down", function(event) {
+      const prohibitedKeys = ["+", "-", "Shift", "_", "="];
+      const keyPressed = event.key;
+      if (prohibitedKeys.indexOf(keyPressed) !== -1) {
+        event.stopPropagation();
+      }
+    });
+
+    view.on("mouse-wheel", function(event) {
+      event.stopPropagation();
+    });
+
+    view.on("double-click", function(event) {
+      event.stopPropagation();
+    });
+
+    view.on("drag", ["Shift"], function(event) {
+      event.stopPropagation();
+    });
+
+    view.on("drag", ["Shift", "Control"], function(event) {
+      event.stopPropagation();
+    });
+
     setView(view);
 
     return () => {
