@@ -9,14 +9,22 @@
  *  if it was not provided.
  */
 
-import {Convergence} from "@convergence/convergence";
+import {ChatRoom, Convergence} from "@convergence/convergence";
 import {PointerStore} from "../stores/PointerStore";
 import {GeoSketchDemoConfig} from "../constants/config";
 import {ModelStore} from "../stores/ModelStore";
 import {ViewportStore} from "../stores/ViewportStore";
+import {ParticipantStore} from "../stores/ParticipantStore";
+import {ChatStore} from "../stores/ChatStore";
 
 export class ConnectionManager {
-  constructor(private demoId: string, private viewportStore: ViewportStore, private pointerStore: PointerStore, private modelStore: ModelStore) {
+  constructor(private demoId: string,
+              private viewportStore: ViewportStore,
+              private pointerStore: PointerStore,
+              private modelStore: ModelStore,
+              private participantStore: ParticipantStore,
+              private chatStore: ChatStore,
+              ) {
   }
 
   public async connect(displayName: string): Promise<void> {
@@ -25,6 +33,7 @@ export class ConnectionManager {
     const activity = await domain.activities().join(this.demoId);
     this.pointerStore.setActivity(activity);
     this.viewportStore.setActivity(activity);
+    this.participantStore.setActivity(activity);
 
     const model = await domain.models().openAutoCreate({
       collection: "maps",
@@ -36,6 +45,17 @@ export class ConnectionManager {
       }
     });
     this.modelStore.setModel(model);
+
+    const roomId = await domain.chat().create({
+      id: this.demoId,
+      type: "room",
+      membership: "public",
+      ignoreExistsError: true
+    });
+
+    const room = (await domain.chat().join(roomId)) as ChatRoom;
+
+    this.chatStore.setChatRoom(room);
   }
 }
 

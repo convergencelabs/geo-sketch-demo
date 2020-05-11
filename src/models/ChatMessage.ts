@@ -9,22 +9,13 @@
  *  if it was not provided.
  */
 
-.GeoSketch {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+import {DomainUser} from "@convergence/convergence";
 
-.main {
-    position: relative;
-    flex: 1;
-
-    flex-direction: row;
-    display: flex;
-}
-
-.map {
-    position: relative;
-    flex: 1;
-    display: flex;
+export class ChatMessage {
+  constructor(public user: DomainUser,
+              public eventId: number,
+              public timestamp: Date,
+              public message: string) {
+    Object.freeze(this);
+  }
 }

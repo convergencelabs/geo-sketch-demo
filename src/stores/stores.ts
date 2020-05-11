@@ -13,15 +13,21 @@ import React from "react";
 import {PointerStore} from "./PointerStore";
 import {ModelStore} from "./ModelStore";
 import {ViewportStore} from "./ViewportStore";
+import {ParticipantStore} from "./ParticipantStore";
+import {ChatStore} from "./ChatStore";
 
 export const pointerStore = new PointerStore();
 export const viewportStore = new ViewportStore();
 export const modelStore = new ModelStore();
+export const participantStore = new ParticipantStore();
+export const chatStore = new ChatStore();
 
 export const storesContext = React.createContext({
   viewportStore,
   pointerStore,
-  modelStore
+  modelStore,
+  participantStore,
+  chatStore
 });
 
 export const useStores = () => React.useContext(storesContext);

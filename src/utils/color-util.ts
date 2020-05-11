@@ -11,4 +11,4 @@
 
 import {ColorAssigner} from '@convergence/color-assigner';
 
-export const colorAssigner = new ColorAssigner(ColorAssigner.Palettes.LIGHT_12);
+export const colorAssigner = new ColorAssigner(ColorAssigner.Palettes.DARK_12);

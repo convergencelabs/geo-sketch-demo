@@ -9,10 +9,70 @@
  *  if it was not provided.
  */
 
-.sideBar {
-    padding: 8px;
+.sideBarClosed, .sideBarOpen {
+    position: relative;
+
+    padding: 0;
     border-bottom: 1px solid darkgray;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
+
+    background: #dedede;
+
+    border-left: 1px solid black;
+}
+
+.sideBarClosed {
+    width: 0;
+}
+
+.sideBarOpen {
+    width: 200px;
+}
+
+.sideBarClosed:hover .toggle, .sideBarOpen:hover .toggle {
+    visibility: visible;
+}
+
+.toggle {
+    visibility: hidden;
+
+    position: absolute;
+
+    left: -21px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 20px;
+    height: 40px;
+
+    background-color: #dedede;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border: 1px solid black;
+    border-right: 0;
+
+    cursor: pointer;
+}
+
+.arrow {
+    position: absolute;
+    top: 14px;
+    left: 9px;
+    border: solid #3a3a3a;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 4px;
+
+    transform: rotate(130deg);
+}
+
+.sideBarOpen .arrow {
+    left: 5px;
+    transform: rotate(-45deg);
+}
+
+.toggle:hover .arrow {
+    border-color: #2d85a8;
 }

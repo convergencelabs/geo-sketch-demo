@@ -9,24 +9,22 @@
  *  if it was not provided.
  */
 
-import React from 'react';
-import {MainArcGisMap} from "../arcgis/MainArcGisMap";
-import {OverviewArcGisMap} from "../arcgis/OverviewArcGisMap";
-import {TitleBar} from "../TitleBar";
+import React from "react";
 import styles from "./styles.module.css";
-import {SideBar} from "../SideBar";
+import {PresenceListItem} from "../PresenceListItem";
+import {useStores} from "../../stores/stores";
+import {observer} from "mobx-react";
 
-export const GeoSketch = () => {
+export const PresenceList = observer(() => {
+  const {participantStore} = useStores();
+
+  const users = Array
+    .from(participantStore.participants.values())
+    .map(u => <PresenceListItem key={u.sessionId} user={u}/>);
+
   return (
-    <div className={styles.GeoSketch}>
-      <TitleBar/>
-      <div className={styles.main}>
-        <div className={styles.map}>
-          <MainArcGisMap/>
-          <OverviewArcGisMap/>
-        </div>
-        <SideBar/>
-      </div>
+    <div className={styles.presenceList}>
+      {users}
     </div>
   );
-};
+});

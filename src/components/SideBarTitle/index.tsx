@@ -9,24 +9,16 @@
  *  if it was not provided.
  */
 
-import React from 'react';
-import {MainArcGisMap} from "../arcgis/MainArcGisMap";
-import {OverviewArcGisMap} from "../arcgis/OverviewArcGisMap";
-import {TitleBar} from "../TitleBar";
+import React from "react";
 import styles from "./styles.module.css";
-import {SideBar} from "../SideBar";
 
-export const GeoSketch = () => {
+export interface ISideBarTitleProps {
+  title: string;
+}
+
+export const SideBarTitle = (props: ISideBarTitleProps) => {
   return (
-    <div className={styles.GeoSketch}>
-      <TitleBar/>
-      <div className={styles.main}>
-        <div className={styles.map}>
-          <MainArcGisMap/>
-          <OverviewArcGisMap/>
-        </div>
-        <SideBar/>
-      </div>
+    <div className={styles.title}>{props.title}
     </div>
   );
 };

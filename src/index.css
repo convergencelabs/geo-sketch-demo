@@ -18,6 +18,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

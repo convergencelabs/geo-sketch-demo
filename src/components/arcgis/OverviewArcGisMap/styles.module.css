@@ -10,13 +10,14 @@
  */
 
 .opened .map {
-    position: fixed;
+    position: absolute;
     height: 200px;
     width: 200px;
     bottom: 0;
     right: 0;
 
     border: 1px solid black;
+    border-right: none;
 }
 
 .closed .map {
@@ -24,7 +25,7 @@
 }
 
 .toggle {
-    position: fixed;
+    position: absolute;
     width: 0;
     height: 0;
     border-left: 20px solid transparent;
@@ -37,7 +38,7 @@
 
 .opened .toggle {
     bottom: 184px;
-    right: 174px;
+    right: 173px;
     transform: rotate(-45deg);
 }
 

@@ -36,7 +36,7 @@ export const RemotePointerGraphic = (props: IRemotePointerGraphicProps) => {
 
 function createPointer(pointer: RemotePointer): Graphic {
   const geometry = new esri.geometry.Point(pointer.coordinates);
-  const {r, g, b} = colorAssigner.getColor(pointer.sessionId);
+  const {r, g, b} = colorAssigner.getColor(pointer.user.userId.toGuid());
   const color = [r, g, b, 0.7];
   const symbol = new esri.symbols.SimpleMarkerSymbol({
     style: "path",

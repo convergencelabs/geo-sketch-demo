@@ -9,22 +9,29 @@
  *  if it was not provided.
  */
 
-.GeoSketch {
-    flex: 1;
+.presenceItem {
     display: flex;
-    flex-direction: column;
-}
-
-.main {
-    position: relative;
-    flex: 1;
-
     flex-direction: row;
-    display: flex;
+    align-items: center;
+    padding: 4px;
 }
 
-.map {
-    position: relative;
+.username {
+    font-size: 14px;
     flex: 1;
-    display: flex;
+    line-height: 1;
+    border-left: 3px solid blue;
+    padding-left: 5px;
 }
+
+
+.presenceItem svg {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #3a3a3a;
+}
+
+.presenceItem svg:hover {
+    color: #005492;
+}
+

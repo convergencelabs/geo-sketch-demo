@@ -9,22 +9,18 @@
  *  if it was not provided.
  */
 
-.GeoSketch {
-    flex: 1;
+.chatPanel {
+    flex-grow: 1;
+
+    position: relative;
+
     display: flex;
     flex-direction: column;
-}
 
-.main {
-    position: relative;
-    flex: 1;
+    border: 1px solid darkgray;
+    margin: 1px;
 
-    flex-direction: row;
-    display: flex;
-}
-
-.map {
-    position: relative;
-    flex: 1;
-    display: flex;
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
 }

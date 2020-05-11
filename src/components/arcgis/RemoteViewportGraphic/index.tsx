@@ -41,7 +41,7 @@ function createViewport(viewport: RemoteViewport): Graphic {
       wkid: 102100
     }});
 
-  const {r, g, b} = colorAssigner.getColor(viewport.sessionId);
+  const {r, g, b} = colorAssigner.getColor(viewport.user.userId.toGuid());
   const symbol = new esri.symbols.SimpleFillSymbol({
     outline: {
       width: 1,

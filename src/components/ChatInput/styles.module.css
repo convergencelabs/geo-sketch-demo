@@ -9,22 +9,21 @@
  *  if it was not provided.
  */
 
-.GeoSketch {
-    flex: 1;
+.chatInput {
+    padding: 2px;
     display: flex;
-    flex-direction: column;
+    border-top: 1px solid darkgray;
 }
 
-.main {
-    position: relative;
+.chatInput textarea {
+    padding: 4px;
     flex: 1;
-
-    flex-direction: row;
-    display: flex;
+    background: white;
+    border: none;
+    color: black;
+    resize: none;
 }
 
-.map {
-    position: relative;
-    flex: 1;
-    display: flex;
+.chatInput textarea:focus {
+    outline: none;
 }

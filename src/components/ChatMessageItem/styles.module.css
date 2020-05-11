@@ -9,22 +9,28 @@
  *  if it was not provided.
  */
 
-.GeoSketch {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.chatMessage {
+    margin-bottom: 8px;
 }
 
-.main {
-    position: relative;
-    flex: 1;
-
+.meta {
+    display: flex;
     flex-direction: row;
-    display: flex;
+    margin-bottom: 3px;
 }
 
-.map {
-    position: relative;
+.username {
+    font-size: 13px;
+    font-weight: bold;
     flex: 1;
-    display: flex;
+    padding-left: 3px;
+    border-left: 3px solid gray;
+}
+
+.timestamp {
+    font-size: 11px;
+}
+
+.content {
+    font-size: 13px;
 }

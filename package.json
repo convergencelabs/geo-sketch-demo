@@ -22,6 +22,7 @@
     "esri-loader": "^2.14.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.2",
+    "moment": "2.24.0",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-copy-to-clipboard": "^5.0.2",
