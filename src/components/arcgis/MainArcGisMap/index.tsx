@@ -20,6 +20,7 @@ import {SketchWidget} from "../SketchWidget";
 import {useStores} from "../../../stores/stores";
 import {observer} from "mobx-react";
 import {ParticipantActionType} from "../../../models/ParticipantAction";
+import {RemoteSelectionLayer} from "../RemoteSelectionLayer";
 
 export const MainArcGisMap = observer(() => {
   const {pointerStore, viewportStore, participantStore} = useStores();
@@ -93,10 +94,8 @@ export const MainArcGisMap = observer(() => {
             wkid: 102100
           }
         };
-        console.log("going to: " + JSON.stringify(extent));
+
         view.extent = new esri.geometry.Extent(extent);
-      } else {
-        console.log("coulndt fine vp");
       }
     } else if (previousExtent) {
       const extent = {
@@ -104,10 +103,10 @@ export const MainArcGisMap = observer(() => {
           wkid: 102100
         }
       };
-      console.log("going back to: " + JSON.stringify(extent));
       view.extent = new esri.geometry.Extent(extent);
       setPreviousExtent(null);
     }
+    // eslint-disable-next-line
   }, [participantStore.participantAction, view, viewportStore.remoteState]);
 
   const pointerLayer = view !== null ?
@@ -119,9 +118,13 @@ export const MainArcGisMap = observer(() => {
   const sketchWidget = view !== null ?
     <SketchWidget view={view}/> : null;
 
+  const selectionLayer = view !== null ?
+    <RemoteSelectionLayer mapView={view}/> : null;
+
   return (
     <React.Fragment>
       <div className={styles.mainMap} ref={mapRef}/>
+      {selectionLayer}
       {sketchWidget}
       {pointerLayer}
       {latLongWidget}

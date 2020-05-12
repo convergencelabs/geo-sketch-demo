@@ -9,15 +9,6 @@
  *  if it was not provided.
  */
 
-import {createUUID} from "./uuid";
-
-export function getDemoId() {
-  const url = new URL(window.location.href);
-  let id = url.searchParams.get('id');
-  if (!id) {
-    id = createUUID();
-    url.searchParams.append('id', id);
-    window.history.pushState({}, "", url.href);
-  }
-  return id;
+.mainMap {
+    flex: 1;
 }

@@ -31,9 +31,9 @@ import SimpleFillSymbol from "esri/symbols/SimpleFillSymbol";
 import SimpleLineSymbol from "esri/symbols/SimpleLineSymbol";
 import Symbol from "esri/symbols/Symbol";
 
-
 export interface GraphicAdapterOptions {
   graphic: any;
+  id: string;
   realTimeObject: RealTimeObject;
   onTransform: (graphic: any) => void;
   onVertexChange: (graphic: any) => void;
@@ -53,6 +53,10 @@ export class GraphicAdapter {
     return (graphic as any).__convergenceAdapter;
   }
 
+  public static getAdapterFromRealTimeObject(rto: RealTimeObject): GraphicAdapter {
+    return (rto as any).__convergenceAdapter;
+  }
+
   private readonly _onTransform: (graphic: any) => void;
   private readonly _onVertexChange: (graphic: any) => void;
 
@@ -69,7 +73,10 @@ export class GraphicAdapter {
 
   private readonly _segmentKey: "paths" | "rings" | null;
 
+  private readonly _id: string;
+
   constructor(options: GraphicAdapterOptions) {
+    this._id = options.id;
     this._graphic = options.graphic;
     this._rtGraphic = options.realTimeObject;
 
@@ -108,6 +115,10 @@ export class GraphicAdapter {
     } else {
       throw Error();
     }
+  }
+
+  public id(): string {
+    return this._id;
   }
 
   public getRealTimeObject(): RealTimeObject {

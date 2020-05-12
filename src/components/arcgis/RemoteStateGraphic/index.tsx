@@ -13,14 +13,14 @@ import {useEffect, useState} from 'react';
 import Graphic from "esri/Graphic";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 
-export interface IRemotePointerGraphicProps {
+export interface IRemoteStateGraphicProps {
   layer: GraphicsLayer;
   item: any;
   create: (item: any) => Graphic;
   update: (item: any, graphic: Graphic) => void;
 }
 
-export const RemoteStateGraphic = (props: IRemotePointerGraphicProps) => {
+export const RemoteStateGraphic = (props: IRemoteStateGraphicProps) => {
   const [graphic, setGraphic] = useState<Graphic | null>(null);
   const {item, layer, update, create} = props;
 

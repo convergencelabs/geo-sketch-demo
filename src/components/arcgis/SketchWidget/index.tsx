@@ -13,16 +13,11 @@ import {useEffect} from 'react';
 import MapView from "esri/views/MapView";
 import {esri} from "../../../utils/ArcGisLoader";
 import {useStores} from "../../../stores/stores";
-import {
-  ArrayInsertEvent,
-  IConvergenceEvent,
-  RealTimeArray,
-  RealTimeElement,
-  RealTimeObject
-} from "@convergence/convergence";
+import {IConvergenceEvent, ObjectSetEvent, RealTimeElement, RealTimeObject} from "@convergence/convergence";
 import {GraphicAdapter} from "../../../utils/GraphicAdapter";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import Graphic from "esri/Graphic"
+import {createUUID} from "../../../utils/uuid";
 
 export interface ISketchWidgetProps {
   view: MapView;
@@ -45,10 +40,11 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
       view.ui.add(sketch, "top-right");
       view.map.add(layer);
 
-      const bindGraphic = (layer: GraphicsLayer, graphic: Graphic, rte: RealTimeObject) => {
+      const bindGraphic = (layer: GraphicsLayer, graphic: Graphic, id: string, rte: RealTimeObject) => {
         GraphicAdapter.bind({
           graphic,
           realTimeObject: rte,
+          id,
           onTransform: (g) => {
             if (sketch.updateGraphics.includes(g) &&  (sketch.viewModel as any).activeComponent) {
               (sketch.viewModel as any).activeComponent.refresh();
@@ -81,21 +77,24 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         });
       };
 
-      const addFeature = (feature: RealTimeObject, layer: GraphicsLayer) => {
+      const addFeature = (feature: RealTimeObject, id: string, layer: GraphicsLayer) => {
         const graphic = esri.Graphic.fromJSON(feature.toJSON());
-        bindGraphic(layer, graphic, feature);
+        bindGraphic(layer, graphic, id, feature);
         layer.add(graphic);
       };
 
-      const features = model.elementAt("features") as RealTimeArray;
+      const features = model.elementAt("features") as RealTimeObject;
 
-      features.forEach((f: RealTimeElement) => {
-        addFeature(f as RealTimeObject, layer);
+      features.forEach((f: RealTimeElement, id?: string) => {
+        addFeature(f as RealTimeObject, id!, layer);
       });
 
-      features.on(RealTimeArray.Events.INSERT, (e: IConvergenceEvent) => {
-        const event = e as ArrayInsertEvent;
-        addFeature(event.value as RealTimeObject, layer);
+      features.on(RealTimeObject.Events.SET, (e: IConvergenceEvent) => {
+        const event = e as ObjectSetEvent;
+        const rto = event.value as RealTimeObject;
+        const p = rto.path();
+        const id = p[p.length - 1] as string;
+        addFeature(rto, id, layer);
       });
 
 
@@ -103,8 +102,9 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         if (e.state === "complete") {
           const json = e.graphic.toJSON();
           delete json["popupTemplate"];
-          const rte = features.push(json);
-          bindGraphic(layer, e.graphic, rte as RealTimeObject);
+          const id = createUUID();
+          const rte = features.set(id, json);
+          bindGraphic(layer, e.graphic, id, rte as RealTimeObject);
         }
       });
 
@@ -178,6 +178,11 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
           }
         }
       });
+
+      sketch.updateGraphics.on("change", e => {
+        const objects = sketch.updateGraphics.toArray().map(g => GraphicAdapter.getAdapter(g).getRealTimeObject());
+        modelStore.setLocalSelection(objects);
+      })
     }
 
     return () => {

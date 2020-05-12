@@ -9,15 +9,12 @@
  *  if it was not provided.
  */
 
-import {createUUID} from "./uuid";
-
-export function getDemoId() {
-  const url = new URL(window.location.href);
-  let id = url.searchParams.get('id');
-  if (!id) {
-    id = createUUID();
-    url.searchParams.append('id', id);
-    window.history.pushState({}, "", url.href);
-  }
-  return id;
+export function createUUID() {
+  let dt = new Date().getTime();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (dt + Math.random() * 16) % 16 | 0;
+    dt = Math.floor(dt / 16);
+    // eslint-disable-next-line
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
 }

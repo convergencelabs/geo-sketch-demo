@@ -9,15 +9,12 @@
  *  if it was not provided.
  */
 
-import {createUUID} from "./uuid";
+import {DomainUser, RealTimeObject} from "@convergence/convergence";
 
-export function getDemoId() {
-  const url = new URL(window.location.href);
-  let id = url.searchParams.get('id');
-  if (!id) {
-    id = createUUID();
-    url.searchParams.append('id', id);
-    window.history.pushState({}, "", url.href);
+export class RemoteSelection {
+  constructor(public readonly user: DomainUser,
+              public readonly sessionId: string,
+              public readonly graphics: RealTimeObject[]) {
+    Object.freeze(this);
   }
-  return id;
 }

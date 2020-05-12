@@ -40,7 +40,7 @@ export class ConnectionManager {
       id: this.demoId,
       data: () => {
         return {
-          features: []
+          features: {}
         };
       }
     });
