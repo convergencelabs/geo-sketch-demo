@@ -25,8 +25,9 @@ export interface IRemoteSelectedGraphicProps {
 }
 
 function translatePoint(view: MapView, p: Polygon, point: number, dx: number, dy: number): void {
-  const currentPoint = view.toScreen(p.getPoint(0, point));
-  const newPoint = view.toMap({x: currentPoint.x + dx, y: currentPoint.y + dy});
+  const currentPoint = p.getPoint(0, point);
+  const sp  = view.toScreen(currentPoint);
+  const newPoint = view.toMap({x: sp.x + dx, y: sp.y + dy});
   p.setPoint(0, point, newPoint);
 }
 

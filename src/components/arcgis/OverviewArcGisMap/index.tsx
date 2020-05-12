@@ -66,7 +66,9 @@ export const OverviewArcGisMap = observer(() => {
       event.stopPropagation();
     });
 
-    setView(view);
+    view.when(() => {
+      setView(view);
+    });
 
     return () => {
       view.destroy();

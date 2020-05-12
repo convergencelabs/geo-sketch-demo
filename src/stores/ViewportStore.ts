@@ -9,18 +9,12 @@
  *  if it was not provided.
  */
 
-import {ActivityParticipant} from "@convergence/convergence";
 import {SharedStateStore} from "./SharedStateStore";
 import {IViewportExtent} from "../models/IViewportExtent";
-import {RemoteViewport} from "../models/RemoteViewport";
 
-export class ViewportStore extends SharedStateStore<RemoteViewport, IViewportExtent> {
+export class ViewportStore extends SharedStateStore<IViewportExtent> {
 
   constructor() {
     super("viewport");
-  }
-
-  protected _jsonToModel(participant: ActivityParticipant, jsonState: IViewportExtent): RemoteViewport {
-    return new RemoteViewport(participant.user, participant.sessionId, jsonState);
   }
 }

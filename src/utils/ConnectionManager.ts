@@ -11,16 +11,22 @@
 
 import {ChatRoom, Convergence} from "@convergence/convergence";
 import {PointerStore} from "../stores/PointerStore";
+import {BasemapStore} from "../stores/BasemapStore";
 import {GeoSketchDemoConfig} from "../constants/config";
 import {ModelStore} from "../stores/ModelStore";
 import {ViewportStore} from "../stores/ViewportStore";
 import {ParticipantStore} from "../stores/ParticipantStore";
 import {ChatStore} from "../stores/ChatStore";
 
+// Convergence.configureLogging({
+//   root: LogLevel.DEBUG
+// });
+
 export class ConnectionManager {
   constructor(private demoId: string,
               private viewportStore: ViewportStore,
               private pointerStore: PointerStore,
+              private basemapStore: BasemapStore,
               private modelStore: ModelStore,
               private participantStore: ParticipantStore,
               private chatStore: ChatStore,
@@ -33,6 +39,7 @@ export class ConnectionManager {
     const activity = await domain.activities().join(this.demoId);
     this.pointerStore.setActivity(activity);
     this.viewportStore.setActivity(activity);
+    this.basemapStore.setActivity(activity);
     this.participantStore.setActivity(activity);
 
     const model = await domain.models().openAutoCreate({
@@ -42,7 +49,8 @@ export class ConnectionManager {
         return {
           features: {}
         };
-      }
+      },
+      ephemeral: true
     });
     this.modelStore.setModel(model);
 

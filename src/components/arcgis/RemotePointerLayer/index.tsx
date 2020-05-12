@@ -10,24 +10,25 @@
  */
 
 import React from 'react';
-import {RemotePointer} from "../../../models/RemotePointer";
 import {RemotePointerGraphic} from "../RemotePointerGraphic";
 import Map from "esri/Map";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import {RemoteStateLayer} from "../RemoteStateLayer";
+import {RemoteState} from "../../../models/RemoteState";
+import {IPointerCoordinates} from "../../../models/IPointerCoordinates";
 
 export interface IRemotePointerLayerProps {
   map: Map;
-  pointers: RemotePointer[]
+  pointers: RemoteState<IPointerCoordinates>[]
 }
 
 export const RemotePointerLayer = (props: IRemotePointerLayerProps) => {
   return <RemoteStateLayer
     map={props.map}
     remoteItems={props.pointers}
-    renderer={(p: RemotePointer, layer: GraphicsLayer) => <RemotePointerGraphic key={p.sessionId}
+    renderer={(p: RemoteState<IPointerCoordinates>, layer: GraphicsLayer) => <RemotePointerGraphic key={p.sessionId}
                                                                                 layer={layer!}
                                                                                 pointer={p}/>
     }
   />;
-}
+};

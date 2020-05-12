@@ -9,12 +9,12 @@
  *  if it was not provided.
  */
 
-import {DomainUser, RealTimeObject} from "@convergence/convergence";
+import {DomainUser} from "@convergence/convergence";
 
-export class RemoteSelection {
+export class RemoteState<T> {
   constructor(public readonly user: DomainUser,
               public readonly sessionId: string,
-              public readonly objects: RealTimeObject[]) {
+              public readonly value: T) {
     Object.freeze(this);
   }
 }

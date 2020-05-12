@@ -10,16 +10,17 @@
  */
 
 import React from 'react';
-import {RemotePointer} from "../../../models/RemotePointer";
 import Graphic from "esri/Graphic";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import {esri} from "../../../utils/ArcGisLoader";
 import {RemoteStateGraphic} from "../RemoteStateGraphic";
 import {colorAssigner} from "../../../utils/color-util";
+import {RemoteState} from "../../../models/RemoteState";
+import {IPointerCoordinates} from "../../../models/IPointerCoordinates";
 
 export interface IRemotePointerGraphicProps {
   layer: GraphicsLayer;
-  pointer: RemotePointer;
+  pointer: RemoteState<IPointerCoordinates>;
 }
 
 export const RemotePointerGraphic = (props: IRemotePointerGraphicProps) => {
@@ -28,14 +29,14 @@ export const RemotePointerGraphic = (props: IRemotePointerGraphicProps) => {
     layer={layer}
     item={pointer}
     create={createPointer}
-    update={(pointer: RemotePointer, graphic: Graphic) => {
-      graphic.geometry = new esri.geometry.Point(pointer.coordinates);
+    update={(state: RemoteState<IPointerCoordinates>, graphic: Graphic) => {
+      graphic.geometry = new esri.geometry.Point(state.value);
     }}
   />;
 };
 
-function createPointer(pointer: RemotePointer): Graphic {
-  const geometry = new esri.geometry.Point(pointer.coordinates);
+function createPointer(pointer: RemoteState<IPointerCoordinates>): Graphic {
+  const geometry = new esri.geometry.Point(pointer.value);
   const {r, g, b} = colorAssigner.getColor(pointer.user.userId.toGuid());
   const color = [r, g, b, 0.7];
   const symbol = new esri.symbols.SimpleMarkerSymbol({

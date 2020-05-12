@@ -9,18 +9,12 @@
  *  if it was not provided.
  */
 
-import {ActivityParticipant} from "@convergence/convergence";
-import {RemotePointer} from "../models/RemotePointer";
 import {IPointerCoordinates} from "../models/IPointerCoordinates";
 import {SharedStateStore} from "./SharedStateStore";
 
-export class PointerStore extends SharedStateStore<RemotePointer, IPointerCoordinates> {
+export class PointerStore extends SharedStateStore<IPointerCoordinates> {
 
   constructor() {
     super("pointer");
-  }
-
-  protected _jsonToModel(participant: ActivityParticipant, jsonState: IPointerCoordinates): RemotePointer {
-    return new RemotePointer(participant.user, participant.sessionId, jsonState);
   }
 }

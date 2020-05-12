@@ -16,12 +16,13 @@ import {GeoSketch} from './components/GeoSketch';
 import * as serviceWorker from './serviceWorker';
 import {ArcGisLoader} from "./utils/ArcGisLoader";
 import {ConnectionManager} from "./utils/ConnectionManager";
-import {pointerStore, modelStore, viewportStore, participantStore, chatStore} from "./stores/stores";
+import {pointerStore, modelStore, viewportStore, participantStore, chatStore, basemapStore} from "./stores/stores";
 import {getDemoId} from "./utils/example-id.js";
+import 'mobx-react-lite/batchingForReactDom';
 
 // TODO move this into the app component using an effect.
 const demoId = getDemoId();
-const connectionManager = new ConnectionManager(demoId, viewportStore, pointerStore, modelStore, participantStore, chatStore);
+const connectionManager = new ConnectionManager(demoId, viewportStore, pointerStore, basemapStore, modelStore, participantStore, chatStore);
 
 ArcGisLoader.init()
   .then(() => connectionManager.connect("michael"))

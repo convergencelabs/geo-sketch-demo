@@ -24,7 +24,7 @@ export interface IRemoteSelectedGraphicsProps {
 }
 
 export const RemoteSelectedGraphics = (props: IRemoteSelectedGraphicsProps) => {
-  const graphics = props.remoteSelection.graphics.map(rto => {
+  const graphics = props.remoteSelection.objects.map(rto => {
     const adapter = GraphicAdapter.getAdapterFromRealTimeObject(rto);
     const color = colorAssigner.getColor(props.remoteSelection.user.userId.toGuid());
     return <RemoteSelectedGraphic key={adapter.id()}

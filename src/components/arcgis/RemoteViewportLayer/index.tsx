@@ -13,21 +13,22 @@ import React from 'react';
 import Map from "esri/Map";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import {RemoteStateLayer} from "../RemoteStateLayer";
-import {RemoteViewport} from "../../../models/RemoteViewport";
 import {RemoteViewportGraphic} from "../RemoteViewportGraphic";
+import {IViewportExtent} from "../../../models/IViewportExtent";
+import {RemoteState} from "../../../models/RemoteState";
 
 export interface IRemoteViewportLayerProps {
   map: Map;
-  viewports: RemoteViewport[]
+  viewports: RemoteState<IViewportExtent>[]
 }
 
 export const RemoteViewportLayer = (props: IRemoteViewportLayerProps) => {
   return <RemoteStateLayer
     map={props.map}
     remoteItems={props.viewports}
-    renderer={(p: RemoteViewport, layer: GraphicsLayer) => <RemoteViewportGraphic key={p.sessionId}
+    renderer={(p: RemoteState<IViewportExtent>, layer: GraphicsLayer) => <RemoteViewportGraphic key={p.sessionId}
                                                                                   layer={layer!}
                                                                                   viewport={p}/>
     }
   />;
-}
+};

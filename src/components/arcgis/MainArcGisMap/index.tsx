@@ -21,16 +21,23 @@ import {useStores} from "../../../stores/stores";
 import {observer} from "mobx-react";
 import {ParticipantActionType} from "../../../models/ParticipantAction";
 import {RemoteSelectionLayer} from "../RemoteSelectionLayer";
+import {BasemapWidget} from "../BasemapWidget";
 
 export const MainArcGisMap = observer(() => {
-  const {pointerStore, viewportStore, participantStore} = useStores();
+  const {pointerStore, viewportStore, participantStore, basemapStore} = useStores();
   const mapRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<MapView | null>(null);
   const [previousExtent, setPreviousExtent] = useState<any>(null);
+  const [previousBasemap, setPreviousBasemap] = useState<any>(null);
 
   useEffect(() => {
+
     const map = new esri.Map({
-      basemap: "streets",
+      basemap: new esri.Basemap({
+        portalItem: {
+          id: "f81bc478e12c4f1691d0d7ab6361f5a6"
+        }
+      })
     });
 
     const view = new esri.views.MapView({
@@ -40,13 +47,15 @@ export const MainArcGisMap = observer(() => {
       zoom: 4
     });
 
-    setView(view);
+    view.when(() => {
+      setView(view);
+    });
 
     const pointerCallback = rateLimitWithCancel((event) => {
       const point = view.toMap({x: event.x, y: event.y});
       const {longitude, latitude} = point;
 
-      pointerStore.setLocalState({x: longitude, y: latitude})
+      pointerStore.setLocalState({x: longitude, y: latitude});
     }, 40);
 
     const moveHandle = view.on("pointer-move", pointerCallback.callback);
@@ -64,12 +73,18 @@ export const MainArcGisMap = observer(() => {
     }, 40);
     const extentHandle = esri.core.watchUtils.watch(view, "extent", extentCallback.callback);
 
+    const basemapHandle = esri.core.watchUtils.watch(view.map, "basemap", () => {
+      const basemap = view.map.basemap;
+      basemapStore.setLocalState(basemap.portalItem.id);
+    });
+
     return () => {
       moveHandle.remove();
       leaveHandle.remove();
       view.destroy();
       map.destroy();
       extentHandle.remove();
+      basemapHandle.remove();
     }
     // eslint-disable-next-line
   }, []);
@@ -79,55 +94,65 @@ export const MainArcGisMap = observer(() => {
       return;
     }
 
-    // console.log(participantStore.participantAction);
-
     if (participantStore.participantAction !== null) {
       const remoteViewport = viewportStore.remoteStateMap.get(participantStore.participantAction.participant.sessionId);
+      const remoteBasemap = basemapStore.remoteStateMap.get(participantStore.participantAction.participant.sessionId);
 
       if (participantStore.participantAction.actionType === ParticipantActionType.PREVIEW && previousExtent === null) {
         setPreviousExtent(view.extent.toJSON());
+        setPreviousBasemap(view.map.basemap);
       }
 
       if (remoteViewport) {
         const extent = {
-          ...remoteViewport.extent, spatialReference: {
+          ...remoteViewport.value, spatialReference: {
             wkid: 102100
           }
         };
 
         view.extent = new esri.geometry.Extent(extent);
       }
-    } else if (previousExtent) {
-      const extent = {
-        ...previousExtent, spatialReference: {
-          wkid: 102100
-        }
-      };
-      view.extent = new esri.geometry.Extent(extent);
-      setPreviousExtent(null);
+
+      if (remoteBasemap && view.map.basemap.portalItem.id !== remoteBasemap.value) {
+        view.map.basemap =  new esri.Basemap({
+          portalItem: {
+            id: remoteBasemap.value
+          }
+        });
+      }
+    } else {
+      if (previousExtent) {
+        const extent = {
+          ...previousExtent, spatialReference: {
+            wkid: 102100
+          }
+        };
+        view.extent = new esri.geometry.Extent(extent);
+        setPreviousExtent(null);
+      }
+
+      if (previousBasemap) {
+        view.map.basemap = previousBasemap;
+        setPreviousBasemap(null);
+      }
     }
     // eslint-disable-next-line
-  }, [participantStore.participantAction, view, viewportStore.remoteState]);
+  }, [participantStore.participantAction, view, viewportStore.remoteState, basemapStore.remoteState]);
 
-  const pointerLayer = view !== null ?
-    <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/> : null;
+  const widgets = view !== null ?
+    <React.Fragment>
+      <LatLongWidget position={pointerStore.localState}/>
+      <BasemapWidget view={view}/>
+      <SketchWidget view={view}/>
+      <RemoteSelectionLayer mapView={view}/>
+      <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/>
+    </React.Fragment> : null;
 
-  const latLongWidget = view !== null ?
-    <LatLongWidget position={pointerStore.localState}/> : null;
-
-  const sketchWidget = view !== null ?
-    <SketchWidget view={view}/> : null;
-
-  const selectionLayer = view !== null ?
-    <RemoteSelectionLayer mapView={view}/> : null;
 
   return (
     <React.Fragment>
       <div className={styles.mainMap} ref={mapRef}/>
-      {selectionLayer}
-      {sketchWidget}
-      {pointerLayer}
-      {latLongWidget}
+      {widgets}
     </React.Fragment>
   );
 });

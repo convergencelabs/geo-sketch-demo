@@ -14,12 +14,13 @@ import Graphic from "esri/Graphic";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import {esri} from "../../../utils/ArcGisLoader";
 import {RemoteStateGraphic} from "../RemoteStateGraphic";
-import {RemoteViewport} from "../../../models/RemoteViewport";
 import {colorAssigner} from "../../../utils/color-util";
+import {IViewportExtent} from "../../../models/IViewportExtent";
+import {RemoteState} from "../../../models/RemoteState";
 
 export interface IRemoteViewportGraphicProps {
   layer: GraphicsLayer;
-  viewport: RemoteViewport;
+  viewport: RemoteState<IViewportExtent>;
 }
 
 export const RemoteViewportGraphic = (props: IRemoteViewportGraphicProps) => {
@@ -28,16 +29,16 @@ export const RemoteViewportGraphic = (props: IRemoteViewportGraphicProps) => {
     layer={layer}
     item={viewport}
     create={createViewport}
-    update={(viewport: RemoteViewport, graphic: Graphic) => {
-      graphic.geometry = new esri.geometry.Extent({...viewport.extent, spatialReference: {
+    update={(viewport: RemoteState<IViewportExtent>, graphic: Graphic) => {
+      graphic.geometry = new esri.geometry.Extent({...viewport.value, spatialReference: {
           wkid: 102100
         }});
     }}
   />;
 };
 
-function createViewport(viewport: RemoteViewport): Graphic {
-  const geometry = new esri.geometry.Extent({...viewport.extent, spatialReference: {
+function createViewport(viewport: RemoteState<IViewportExtent>): Graphic {
+  const geometry = new esri.geometry.Extent({...viewport.value, spatialReference: {
       wkid: 102100
     }});
 

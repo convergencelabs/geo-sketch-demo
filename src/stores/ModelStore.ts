@@ -77,6 +77,14 @@ export class ModelStore {
         }
       });
     });
+
+    model.references({key: "selection"}).forEach(r => {
+      const selected = r.values() as RealTimeObject[];
+      if (!r.isLocal()) {
+        const remoteSelection = new RemoteSelection(r.user(), r.sessionId(), selected);
+        this.setRemoteSelection(r.sessionId(), remoteSelection);
+      }
+    });
   }
 
   public setLocalSelection(selection: RealTimeObject[]): void {

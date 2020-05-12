@@ -10,6 +10,8 @@
  */
 
 import {loadModules, loadCss} from 'esri-loader';
+
+import Basemap from "esri/Basemap";
 import Color from "esri/Color";
 import Map from "esri/Map";
 import Graphic from "esri/Graphic";
@@ -31,10 +33,13 @@ import SimpleLineSymbol from "esri/symbols/SimpleLineSymbol";
 import SimpleMarkerSymbol from "esri/symbols/SimpleMarkerSymbol";
 
 import MapView from "esri/views/MapView";
+
+import BasemapGallery from "esri/widgets/BasemapGallery";
+import Expand from "esri/widgets/Expand";
 import Sketch from "esri/widgets/Sketch";
 
-
 const modules = [
+  "esri/Basemap",
   "esri/Color",
   "esri/Graphic",
   "esri/Map",
@@ -57,10 +62,14 @@ const modules = [
   "esri/symbols/Symbol",
 
   "esri/views/MapView",
+
+  "esri/widgets/Expand",
+  "esri/widgets/BasemapGallery",
   "esri/widgets/Sketch"
 ];
 
 export interface IEsri {
+  Basemap: typeof Basemap;
   Color: typeof Color;
   Map: typeof Map;
   Graphic: typeof Graphic;
@@ -90,6 +99,8 @@ export interface IEsri {
     MapView: typeof MapView;
   };
   widgets: {
+    BasemapGallery: typeof BasemapGallery,
+    Expand: typeof Expand,
     Sketch: typeof Sketch;
   };
 }

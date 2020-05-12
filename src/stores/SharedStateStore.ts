@@ -18,14 +18,15 @@ import {
   ActivityStateSetEvent
 } from "@convergence/convergence";
 import {action, computed, observable} from "mobx";
+import {RemoteState} from "../models/RemoteState";
 
-export abstract class SharedStateStore<M = any, J = any> {
-
-  @observable
-  public remoteStateMap: Map<string, M>;
+export abstract class SharedStateStore<M = any> {
 
   @observable
-  public localState: J | null = null;
+  public remoteStateMap: Map<string, RemoteState<M>>;
+
+  @observable
+  public localState: M | null = null;
 
   private readonly _stateKey: string;
   private _activity: Activity | null = null;
@@ -64,18 +65,16 @@ export abstract class SharedStateStore<M = any, J = any> {
   }
 
   @computed
-  public get remoteState(): M[] {
+  public get remoteState(): RemoteState<M>[] {
     return Array.from(this.remoteStateMap.values());
   }
 
   @action
-  public setLocalState(value: J): void {
+  public setLocalState(value: M): void {
     this.localState = value;
 
     if (this._activity !== null) {
-      this._activity.setState({
-        [this._stateKey]: value
-      });
+      this._activity.setState({[this._stateKey]: value});
     }
   }
 
@@ -89,11 +88,9 @@ export abstract class SharedStateStore<M = any, J = any> {
   }
 
   @action
-  public setRemoteState(sessionId: string, remoteState: M): void {
+  public setRemoteState(sessionId: string, remoteState: RemoteState<M>): void {
     this.remoteStateMap.set(sessionId, remoteState);
   }
-
-  protected abstract _jsonToModel(participant: ActivityParticipant, jsonState: J): M;
 
   private _onUpdateState = (e: ActivityStateSetEvent | ActivitySessionJoinedEvent) => {
     if (this._activity === null) {
@@ -111,9 +108,8 @@ export abstract class SharedStateStore<M = any, J = any> {
     this.remoteStateMap.delete(e.sessionId);
   };
 
-  private _createModel(participant: ActivityParticipant): M {
-    const state = participant.state;
-    const jsonState: J = state.get(this._stateKey);
-    return this._jsonToModel(participant, jsonState);
+  private _createModel(participant: ActivityParticipant): RemoteState<M> {
+    const state = participant.state.get(this._stateKey);
+    return new RemoteState<M>(participant.user, participant.sessionId, state);
   }
 }

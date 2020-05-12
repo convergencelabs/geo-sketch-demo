@@ -9,13 +9,11 @@
  *  if it was not provided.
  */
 
-import {IPointerCoordinates} from "./IPointerCoordinates";
-import {DomainUser} from "@convergence/convergence";
+import {SharedStateStore} from "./SharedStateStore";
 
-export class RemotePointer {
-  constructor(public readonly user: DomainUser,
-              public readonly sessionId: string,
-              public readonly coordinates: IPointerCoordinates) {
-    Object.freeze(this);
+export class BasemapStore extends SharedStateStore<string> {
+
+  constructor() {
+    super("basemap");
   }
 }

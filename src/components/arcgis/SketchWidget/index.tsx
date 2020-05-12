@@ -189,7 +189,9 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
       if (view.map) {
         view.map.remove(layer);
       }
-      view.ui.remove(sketch);
+      if (view.ui) {
+        view.ui.remove(sketch);
+      }
     }
     // eslint-disable-next-line
   }, [view]);
