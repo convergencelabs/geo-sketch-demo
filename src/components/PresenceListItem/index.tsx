@@ -56,14 +56,17 @@ export const PresenceListItem = (props: IPresenceItem) => {
     }
   };
 
-  const linked = user === linkedUser;
+  // const linked = ;
+
+  const className = linkedUser ? styles.disabled : styles.enabled;
+  const linkClass = user === linkedUser ? styles.linked : className;
 
   const username = user.local ? user.user.displayName + " (you)" : user.user.displayName;
   const actions = user.local ? null :
     <React.Fragment>
-      <FontAwesomeIcon icon={faEye} size={"xs"} onMouseEnter={startPreview} onMouseLeave={endPreview}/>
-      <FontAwesomeIcon icon={faExternalLinkSquareAlt} size={"xs"} onClick={goTo}/>
-      <FontAwesomeIcon className={linked ? styles.linked : ""} icon={faLink} size={"xs"} onClick={toggleLinked}/>
+      <FontAwesomeIcon className={className}icon={faEye} size={"xs"} onMouseEnter={startPreview} onMouseLeave={endPreview}/>
+      <FontAwesomeIcon className={className} icon={faExternalLinkSquareAlt} size={"xs"} onClick={goTo}/>
+      <FontAwesomeIcon className={linkClass} icon={faLink} size={"xs"} onClick={toggleLinked}/>
     </React.Fragment>;
 
   return (

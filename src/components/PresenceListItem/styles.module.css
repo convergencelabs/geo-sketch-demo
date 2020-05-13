@@ -31,11 +31,16 @@
     color: #3a3a3a;
 }
 
-.presenceItem svg:hover {
+.presenceItem svg.enabled:hover {
     color: #005492;
 }
 
 .presenceItem svg.linked {
     color: #e82b2b;
+}
+
+.presenceItem svg.disabled {
+    color: #939393;
+    cursor: default;
 }
 

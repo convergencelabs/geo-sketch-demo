@@ -17,6 +17,7 @@ import {IConvergenceEvent, ObjectSetEvent, RealTimeElement, RealTimeObject} from
 import {GraphicAdapter} from "../../../utils/GraphicAdapter";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import Graphic from "esri/Graphic"
+import Sketch from "esri/widgets/Sketch";
 import {createUUID} from "../../../utils/uuid";
 import {reactColorToEsriColor} from "../../../utils/color-util";
 
@@ -27,19 +28,22 @@ export interface ISketchWidgetProps {
 export const SketchWidget = (props: ISketchWidgetProps) => {
   const {modelStore, formattingStore} = useStores();
   const {view} = props;
+  const {model} = modelStore;
 
   useEffect(() => {
-    const layer = new esri.layers.GraphicsLayer();
-    const sketch = new esri.widgets.Sketch({
-      layer: layer,
-      view: view,
-      creationMode: "update"
-    });
-
-    const {model} = modelStore;
+    let layer: GraphicsLayer;
+    let sketch: Sketch;
     if (model !== null && view) {
-      view.ui.add(sketch, "top-right");
+      layer = new esri.layers.GraphicsLayer();
       view.map.add(layer);
+
+      sketch = new esri.widgets.Sketch({
+        layer: layer,
+        view: view,
+        creationMode: "update"
+      });
+
+      view.ui.add(sketch, "top-right");
 
       const bindGraphic = (layer: GraphicsLayer, graphic: Graphic, id: string, rte: RealTimeObject) => {
         GraphicAdapter.bind({
@@ -50,15 +54,11 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
             if (sketch.updateGraphics.includes(g) &&  (sketch.viewModel as any).activeComponent) {
               (sketch.viewModel as any).activeComponent.refresh();
             }
-
-            // this._selectionManager!.updateGraphic(g);
           },
           onVertexChange: (g) => {
             if (sketch.updateGraphics.includes(g) &&  (sketch.viewModel as any).activeComponent) {
               (sketch.viewModel as any).activeComponent.refresh();
             }
-
-            // this._selectionManager!.updateGraphic(g);
           },
           onRemove: (g) => {
             layer.remove(g);
@@ -72,8 +72,6 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
                 sketch.cancel();
               }
             }
-
-            // this._selectionManager!.removeGraphic(g);
           }
         });
       };
@@ -97,7 +95,6 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         const id = p[p.length - 1] as string;
         addFeature(rto, id, layer);
       });
-
 
       sketch.on("create", e => {
         if (e.state === "complete") {
@@ -191,18 +188,19 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         }
       });
 
-      sketch.updateGraphics.on("change", e => {
-        formattingStore.setSelectedGraphics(sketch.updateGraphics.toArray());
-        const objects = sketch.updateGraphics.toArray().map(g => GraphicAdapter.getAdapter(g).getRealTimeObject());
+      sketch.updateGraphics.on("change", () => {
+        const graphics = sketch.updateGraphics.toArray();
+        formattingStore.setSelectedGraphics(graphics);
+        const objects = graphics.map(g => GraphicAdapter.getAdapter(g).getRealTimeObject());
         modelStore.setLocalSelection(objects);
-      })
+      });
     }
 
     return () => {
-      if (view.map) {
+      if (view.map && layer) {
         view.map.remove(layer);
       }
-      if (view.ui) {
+      if (view.ui && sketch) {
         view.ui.remove(sketch);
       }
     }

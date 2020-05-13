@@ -129,6 +129,10 @@ export class GraphicAdapter {
     return this._graphic;
   }
 
+  public getSymbol(): Symbol {
+    return this._fillSymbol || this._lineSymbol;
+  }
+
   private _bindToPoint(): void {
     const x = this._rtGeometry.get("x") as RealTimeNumber;
     x.on(RealTimeNumber.Events.VALUE, () => {
@@ -287,7 +291,7 @@ export class GraphicAdapter {
         break;
       case  "multipoint":
       case "extent":
-        throw new Error("can't handle geometry: " + geometry.type);
+        throw new Error("unsupported geometry type: " + geometry.type);
     }
   }
 
@@ -298,20 +302,29 @@ export class GraphicAdapter {
   private _bindSymbol(symbol: Symbol, rtSymbol: RealTimeObject): void {
     rtSymbol.get("color").on(RealTimeObject.Events.VALUE, (evt: IConvergenceEvent) => {
       const e = evt as ArraySetValueEvent;
-      const color = this._toEsriColor(e.element as RealTimeArray);
-      symbol.color = color;
+      symbol.color = this._toEsriColor(e.element as RealTimeArray);
+
+      // Hack to get the symbol to refresh
+      const original = this._graphic.symbol;
+      this._graphic.symbol = esri.symbols.Symbol.fromJSON({});
+      this._graphic.symbol = original;
     });
 
     if (rtSymbol.hasKey("width")) {
       rtSymbol.get("width").on(RealTimeNumber.Events.VALUE, (evt: IConvergenceEvent) => {
         const e = evt as NumberSetValueEvent;
         (symbol as SimpleLineSymbol).width = e.element.value();
+
+        // Hack to get the symbol to refresh
+        const original = this._graphic.symbol;
+        this._graphic.symbol = esri.symbols.Symbol.fromJSON({});
+        this._graphic.symbol = original;
       });
     }
   }
 
   private _setColor(symbol: Symbol, rta: RealTimeArray, color: RGBColor): void {
-    const c = [color.r, color.g, color.b, (color.a === undefined ? 1 : color.a)];
+    const c = [color.r, color.g, color.b, (color.a === undefined ? 1 : color.a) * 255];
     symbol.color = new esri.Color(c);
     rta.value(c);
   }
