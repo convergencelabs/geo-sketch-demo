@@ -11,4 +11,23 @@
 
 import {ColorAssigner} from '@convergence/color-assigner';
 
+import Color from "esri/Color";
+import {esri} from "./ArcGisLoader";
+import {RGBColor} from "react-color";
+
 export const colorAssigner = new ColorAssigner(ColorAssigner.Palettes.DARK_12);
+
+
+export function reactColorToEsriColor(color: RGBColor): Color {
+  const {r, g, b, a} = color;
+  const colorArray = [r, g, b];
+  if (a !== undefined) {
+    colorArray.push(a);
+  }
+  return new esri.Color(colorArray);
+}
+
+export function esriColorToReactColor(color: Color): RGBColor {
+  const {r, g, b, a} = color;
+  return {r, g, b, a};
+}

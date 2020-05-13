@@ -22,6 +22,7 @@ import {observer} from "mobx-react";
 import {ParticipantActionType} from "../../../models/ParticipantAction";
 import {RemoteSelectionLayer} from "../RemoteSelectionLayer";
 import {BasemapWidget} from "../BasemapWidget";
+import {FormattingWidget} from "../FormatingWidget";
 
 export const MainArcGisMap = observer(() => {
   const {pointerStore, viewportStore, participantStore, basemapStore} = useStores();
@@ -144,10 +145,10 @@ export const MainArcGisMap = observer(() => {
       <LatLongWidget position={pointerStore.localState}/>
       <BasemapWidget view={view}/>
       <SketchWidget view={view}/>
+      <FormattingWidget/>
       <RemoteSelectionLayer mapView={view}/>
       <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/>
     </React.Fragment> : null;
-
 
   return (
     <React.Fragment>

@@ -20,7 +20,6 @@ import {
   RealTimeNumber,
   RealTimeObject
 } from "@convergence/convergence";
-import {IRgbaColor} from "../models/IRgbaColor";
 import {esri} from "./ArcGisLoader";
 import Graphic from "esri/Graphic";
 import Geometry from "esri/geometry/Geometry";
@@ -30,6 +29,7 @@ import Polyline from "esri/geometry/Polyline";
 import SimpleFillSymbol from "esri/symbols/SimpleFillSymbol";
 import SimpleLineSymbol from "esri/symbols/SimpleLineSymbol";
 import Symbol from "esri/symbols/Symbol";
+import {RGBColor} from "react-color";
 
 export interface GraphicAdapterOptions {
   graphic: any;
@@ -187,7 +187,7 @@ export class GraphicAdapter {
     });
   }
 
-  public setFillColor(color: IRgbaColor): void {
+  public setFillColor(color: RGBColor): void {
     if (!this._fillSymbol || !this._rtFillSymbol) {
       throw new Error("This graphic does not have a fill symbol");
     }
@@ -195,7 +195,7 @@ export class GraphicAdapter {
     this._setColor(this._fillSymbol, rta, color);
   }
 
-  public setLineColor(color: IRgbaColor): void {
+  public setLineColor(color: RGBColor): void {
     const rta = this._rtLineSymbol.get("color") as RealTimeArray;
     this._setColor(this._lineSymbol, rta, color);
   }
@@ -310,15 +310,14 @@ export class GraphicAdapter {
     }
   }
 
-  private _setColor(symbol: any, rta: RealTimeArray, color: IRgbaColor): void {
-    symbol.setColor(color);
-    const c = [color.r, color.g, color.b, color.a * 255];
+  private _setColor(symbol: Symbol, rta: RealTimeArray, color: RGBColor): void {
+    const c = [color.r, color.g, color.b, (color.a === undefined ? 1 : color.a)];
+    symbol.color = new esri.Color(c);
     rta.value(c);
   }
 
   private _toEsriColor(rtColor: RealTimeArray): any {
     const c = rtColor.value();
-    c[3] = c[3] / 255;
     return new esri.Color(c);
   }
 }

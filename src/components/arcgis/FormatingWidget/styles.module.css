@@ -9,9 +9,12 @@
  *  if it was not provided.
  */
 
-export interface IRgbaColor {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+.latLonWidget {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, .5);
+    color: black;
+    padding: 4px;
+    font-size: 12px;
 }

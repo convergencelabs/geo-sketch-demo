@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided 
+ * along with this file, typically located in the "LICENSE" file, which is part 
+ * of this source code package. Alternatively, see 
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+.picker {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+.swatch {
+    background: #fff;
+
+    padding: 3px;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+}
+
+.color {
+    width: 30px;
+    height: 14px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.popover {
+    position: absolute;
+    z-index: 2;
+}
+
+.cover {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

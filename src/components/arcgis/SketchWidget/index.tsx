@@ -18,13 +18,14 @@ import {GraphicAdapter} from "../../../utils/GraphicAdapter";
 import GraphicsLayer from "esri/layers/GraphicsLayer";
 import Graphic from "esri/Graphic"
 import {createUUID} from "../../../utils/uuid";
+import {reactColorToEsriColor} from "../../../utils/color-util";
 
 export interface ISketchWidgetProps {
   view: MapView;
 }
 
 export const SketchWidget = (props: ISketchWidgetProps) => {
-  const {modelStore} = useStores();
+  const {modelStore, formattingStore} = useStores();
   const {view} = props;
 
   useEffect(() => {
@@ -100,11 +101,22 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
 
       sketch.on("create", e => {
         if (e.state === "complete") {
-          const json = e.graphic.toJSON();
+          const graphic = e.graphic;
+
+          graphic.symbol.color = reactColorToEsriColor(formattingStore.fillColor);
+
+          if ((graphic.symbol as any).outline !== undefined) {
+            const outline = (graphic.symbol as any).outline;
+            outline.color = reactColorToEsriColor(formattingStore.lineColor);
+            outline.width = formattingStore.lineThickness;
+          }
+
+          const json = graphic.toJSON();
           delete json["popupTemplate"];
           const id = createUUID();
           const rte = features.set(id, json);
-          bindGraphic(layer, e.graphic, id, rte as RealTimeObject);
+
+          bindGraphic(layer, graphic, id, rte as RealTimeObject);
         }
       });
 
@@ -180,6 +192,7 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
       });
 
       sketch.updateGraphics.on("change", e => {
+        formattingStore.setSelectedGraphics(sketch.updateGraphics.toArray());
         const objects = sketch.updateGraphics.toArray().map(g => GraphicAdapter.getAdapter(g).getRealTimeObject());
         modelStore.setLocalSelection(objects);
       })
