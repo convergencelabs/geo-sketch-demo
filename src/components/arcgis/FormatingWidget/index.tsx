@@ -9,31 +9,63 @@
  *  if it was not provided.
  */
 
-import React, {useRef} from 'react';
+import React, {ChangeEvent} from 'react';
 import styles from "./styles.module.css";
-import {IPointerCoordinates} from "../../../models/IPointerCoordinates";
+import {faFill, faGripLines, faSlash} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {ColorPickerButton} from "../../ColorPickerButton";
+import {useStores} from "../../../stores/stores";
+import {observer} from "mobx-react";
+import {RGBColor} from "react-color";
+import {GraphicAdapter} from "../../../utils/GraphicAdapter";
 
-export interface LatLongWidgetProps {
-  position: IPointerCoordinates | null;
-}
+export const FormattingWidget = observer(() => {
+  const {formattingStore} = useStores();
 
-export const LatLongWidget = (props: LatLongWidgetProps) => {
-  const {position} = props;
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const rendered = toString(position);
-  return <div className={styles.latLonWidget} ref={widgetRef}>{rendered}</div>;
-};
+  function setFillColor(color: RGBColor) {
+    formattingStore.setFillColor(color);
+    formattingStore.graphics.forEach(g => {
+      const adapter = GraphicAdapter.getAdapter(g);
+      adapter.setFillColor(color);
+    });
+  }
 
-function toString(position: IPointerCoordinates | null): string {
-  return position ? `${ddToDMS(position.y, true)}, ${ddToDMS(position.x, false)}` : "";
-}
+  function setLineColor(color: RGBColor) {
+    formattingStore.setLineColor(color);
+    formattingStore.graphics.forEach(g => {
+      const adapter = GraphicAdapter.getAdapter(g);
+      adapter.setLineColor(color);
+    });
+  }
 
-function ddToDMS(dd: number, lat: boolean): string {
-  const d = Number(dd);
-  const m = Number((dd - d) * 60);
-  const s = (dd - d - m/60) * 3600;
+  function setLineThickness(e: ChangeEvent<HTMLInputElement>) {
+    const thickness = Number(e.target.value);
+    formattingStore.setLineThickness(thickness);
+    formattingStore.graphics.forEach(g => {
+      const adapter = GraphicAdapter.getAdapter(g);
+      adapter.setLineThickness(thickness);
+    });
+  }
 
-  const direction = lat ? dd < 0 ? "S" : "N" : dd < 0 ? "W" : "E";
-
-  return `${Math.abs(Math.round(d))}° ${Math.round(m)}' ${Math.round(s)}" ${direction}`
-}
+  return (
+    <div className={styles.formattingWidget}>
+      <div className={styles.row}>
+        <span className={styles.button}><FontAwesomeIcon icon={faFill}/></span>
+        <ColorPickerButton onChange={setFillColor} color={formattingStore.fillColor}/>
+      </div>
+      <div className={styles.row}>
+        <span className={styles.button}><FontAwesomeIcon icon={faSlash}/></span>
+        <ColorPickerButton onChange={setLineColor} color={formattingStore.lineColor}/>
+      </div>
+      <div className={styles.row}>
+        <span className={styles.button}><FontAwesomeIcon icon={faGripLines}/></span>
+        <input className={styles.thickness}
+               type="number"
+               min={0}
+               value={formattingStore.lineThickness}
+               onChange={setLineThickness}
+        />
+      </div>
+    </div>
+  );
+});
