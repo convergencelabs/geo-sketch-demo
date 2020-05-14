@@ -26,14 +26,18 @@ export abstract class SharedStateStore<M = any> {
   public remoteStateMap: Map<string, RemoteState<M>>;
 
   @observable
-  public localState: M | null = null;
+  public localState: M;
+
+  private _defaultLocalState: M;
 
   private readonly _stateKey: string;
   private _activity: Activity | null = null;
 
-  protected constructor(stateKey: string) {
+  protected constructor(stateKey: string, defaultLocalState: M) {
     this._stateKey = stateKey;
     this.remoteStateMap = new Map();
+    this.localState = defaultLocalState;
+    this._defaultLocalState = defaultLocalState;
   }
 
   @action
@@ -80,7 +84,7 @@ export abstract class SharedStateStore<M = any> {
 
   @action
   public clearLocalState(): void {
-    this.localState = null;
+    this.localState = this._defaultLocalState;
 
     if (this._activity !== null) {
       this._activity.removeState(this._stateKey);

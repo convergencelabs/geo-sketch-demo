@@ -12,9 +12,9 @@
 import {IPointerCoordinates} from "../models/IPointerCoordinates";
 import {SharedStateStore} from "./SharedStateStore";
 
-export class PointerStore extends SharedStateStore<IPointerCoordinates> {
+export class PointerStore extends SharedStateStore<IPointerCoordinates | null> {
 
   constructor() {
-    super("pointer");
+    super("pointer", null);
   }
 }

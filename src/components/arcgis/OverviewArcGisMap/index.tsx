@@ -19,13 +19,17 @@ import {observer} from "mobx-react";
 
 export const OverviewArcGisMap = observer(() => {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const { viewportStore } = useStores();
+  const { viewportStore, basemapStore } = useStores();
   const [open, setOpen] = useState(true);
   const [view, setView] = useState<MapView | null>(null);
 
   useEffect(() => {
     const map = new esri.Map({
-      basemap: "streets"
+      basemap: new esri.Basemap({
+        portalItem: {
+          id: basemapStore.localState || "f81bc478e12c4f1691d0d7ab6361f5a6"
+        }
+      })
     });
 
     const view = new esri.views.MapView({
@@ -76,6 +80,16 @@ export const OverviewArcGisMap = observer(() => {
     }
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (view) {
+      view.map.basemap = new esri.Basemap({
+        portalItem: {
+          id: basemapStore.localState
+        }
+      })
+    }
+  }, [basemapStore.localState, view]);
 
   function toggle() {
     setOpen(!open);

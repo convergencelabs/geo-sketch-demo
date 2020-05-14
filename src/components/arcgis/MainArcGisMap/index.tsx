@@ -23,6 +23,7 @@ import {ParticipantActionType} from "../../../models/ParticipantAction";
 import {RemoteSelectionLayer} from "../RemoteSelectionLayer";
 import {BasemapWidget} from "../BasemapWidget";
 import {FormattingWidget} from "../FormatingWidget";
+import {EditorWidget} from "../EditorWidget";
 
 export const MainArcGisMap = observer(() => {
   const {pointerStore, viewportStore, participantStore, basemapStore} = useStores();
@@ -36,7 +37,7 @@ export const MainArcGisMap = observer(() => {
     const map = new esri.Map({
       basemap: new esri.Basemap({
         portalItem: {
-          id: "f81bc478e12c4f1691d0d7ab6361f5a6"
+          id: basemapStore.localState
         }
       })
     });
@@ -144,9 +145,10 @@ export const MainArcGisMap = observer(() => {
     <React.Fragment>
       <LatLongWidget position={pointerStore.localState}/>
       <BasemapWidget view={view}/>
+      <RemoteSelectionLayer mapView={view}/>
       <SketchWidget view={view}/>
       <FormattingWidget/>
-      <RemoteSelectionLayer mapView={view}/>
+      <EditorWidget view={view}/>
       <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/>
     </React.Fragment> : null;
 

@@ -110,6 +110,10 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
 
           const json = graphic.toJSON();
           delete json["popupTemplate"];
+          json.attributes = {
+            title: "",
+            description: ""
+          };
           const id = createUUID();
           const rte = features.set(id, json);
 

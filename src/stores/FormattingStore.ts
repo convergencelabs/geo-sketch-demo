@@ -41,13 +41,13 @@ export class FormattingStore {
       const symbol = GraphicAdapter.getAdapter(graphic).getRealTimeObject().get("symbol") as RealTimeObject;
       const [r, g, b, a] = symbol.get("color").value() as number[];
 
-      this.fillColor = {r, g, b, a};
+      this.fillColor = {r, g, b, a: a / 255};
 
       if (symbol.hasKey("outline")) {
         const outline = symbol.get("outline") as RealTimeObject;
         this.lineThickness = outline.get("width").value() as number;
         const [r, g, b, a] = outline.get("color").value() as number[];
-        this.lineColor = {r, g, b, a};
+        this.lineColor = {r, g, b, a: a / 255};
       }
     }
   }

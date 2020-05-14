@@ -14,7 +14,7 @@ import {
   LocalElementReference,
   RealTimeModel,
   RealTimeObject,
-  ReferenceChangedEvent,
+  ReferenceSetEvent,
   ReferenceClearedEvent,
   ReferenceDisposedEvent,
   RemoteReferenceCreatedEvent
@@ -65,7 +65,7 @@ export class ModelStore {
 
       const ref = re.reference;
       const refSub = ref.events().subscribe(e => {
-        if (e instanceof ReferenceChangedEvent && e.src instanceof ElementReference) {
+        if (e instanceof ReferenceSetEvent && e.src instanceof ElementReference) {
           const selected = e.src.values() as RealTimeObject[];
           const remoteSelection = new RemoteSelection(e.src.user(), e.src.sessionId(), selected);
           this.setRemoteSelection(e.src.sessionId(), remoteSelection);
@@ -87,6 +87,7 @@ export class ModelStore {
     });
   }
 
+  @action
   public setLocalSelection(selection: RealTimeObject[]): void {
     if (this._selectionReference) {
       this._selectionReference?.set(selection);

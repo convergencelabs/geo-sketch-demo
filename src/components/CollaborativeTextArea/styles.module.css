@@ -9,11 +9,6 @@
  *  if it was not provided.
  */
 
-import {SharedStateStore} from "./SharedStateStore";
-
-export class BasemapStore extends SharedStateStore<string> {
-
-  constructor(initialBasemap: string) {
-    super("basemap", "f81bc478e12c4f1691d0d7ab6361f5a6");
-  }
+.collabTextArea {
+    line-height: 1.2;
 }

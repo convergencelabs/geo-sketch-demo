@@ -20,7 +20,7 @@ import {FormattingStore} from "./FormattingStore";
 
 export const pointerStore = new PointerStore();
 export const viewportStore = new ViewportStore();
-export const basemapStore = new BasemapStore();
+export const basemapStore = new BasemapStore("f81bc478e12c4f1691d0d7ab6361f5a6");
 export const modelStore = new ModelStore();
 export const participantStore = new ParticipantStore();
 export const chatStore = new ChatStore();

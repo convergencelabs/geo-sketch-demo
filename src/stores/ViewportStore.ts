@@ -12,9 +12,9 @@
 import {SharedStateStore} from "./SharedStateStore";
 import {IViewportExtent} from "../models/IViewportExtent";
 
-export class ViewportStore extends SharedStateStore<IViewportExtent> {
+export class ViewportStore extends SharedStateStore<IViewportExtent | null> {
 
   constructor() {
-    super("viewport");
+    super("viewport", null);
   }
 }

@@ -19,7 +19,7 @@ import {RemoteState} from "../../../models/RemoteState";
 
 export interface IRemoteViewportLayerProps {
   map: Map;
-  viewports: RemoteState<IViewportExtent>[]
+  viewports: RemoteState<IViewportExtent | null>[]
 }
 
 export const RemoteViewportLayer = (props: IRemoteViewportLayerProps) => {

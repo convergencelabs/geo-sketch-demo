@@ -19,7 +19,7 @@ import {IPointerCoordinates} from "../../../models/IPointerCoordinates";
 
 export interface IRemotePointerLayerProps {
   map: Map;
-  pointers: RemoteState<IPointerCoordinates>[]
+  pointers: RemoteState<IPointerCoordinates | null>[]
 }
 
 export const RemotePointerLayer = (props: IRemotePointerLayerProps) => {

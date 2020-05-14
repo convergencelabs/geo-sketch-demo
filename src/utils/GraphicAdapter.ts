@@ -18,7 +18,7 @@ import {
   NumberSetValueEvent,
   RealTimeArray,
   RealTimeNumber,
-  RealTimeObject
+  RealTimeObject, RealTimeString
 } from "@convergence/convergence";
 import {esri} from "./ArcGisLoader";
 import Graphic from "esri/Graphic";
@@ -71,6 +71,9 @@ export class GraphicAdapter {
   private readonly _fillSymbol: SimpleFillSymbol | null;
   private readonly _rtFillSymbol: RealTimeObject | undefined;
 
+  private readonly _rtTitle: RealTimeString;
+  private readonly _rtDescription: RealTimeString;
+
   private readonly _segmentKey: "paths" | "rings" | null;
 
   private readonly _id: string;
@@ -115,6 +118,9 @@ export class GraphicAdapter {
     } else {
       throw Error();
     }
+
+    this._rtDescription = this._rtGraphic.elementAt(["attributes", "description"]) as RealTimeString;
+    this._rtTitle = this._rtGraphic.elementAt(["attributes", "title"]) as RealTimeString;
   }
 
   public id(): string {
@@ -123,6 +129,14 @@ export class GraphicAdapter {
 
   public getRealTimeObject(): RealTimeObject {
     return this._rtGraphic;
+  }
+
+  public getDescriptionAttribute(): RealTimeString {
+    return this._rtDescription;
+  }
+
+  public getTitleAttribute(): RealTimeString {
+    return this._rtTitle;
   }
 
   public getGraphic(): any {

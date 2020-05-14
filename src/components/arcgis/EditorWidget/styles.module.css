@@ -1,0 +1,95 @@
+/*
+ * Copyright (c) 2020 Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Chat Demo, which is released under
+ * the terms of the MIT License. A copy of the MIT should have been provided
+ * along with this file, typically located in the "LICENSE" file, which is part
+ * of this source code package. Alternatively, see
+ * <https://opensource.org/licenses/MIT> for the full text of theMIT license,
+ *  if it was not provided.
+ */
+
+.collapsed, .expanded {
+    position: absolute;
+    top: 135px;
+    left: 15px;
+}
+
+.expanderButton {
+    height: 32px;
+    width: 32px;
+
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    justify-content: center;
+
+    color: #6e6e6e;
+
+    cursor: pointer;
+    transition: background-color 125ms ease-in-out;
+}
+
+.expanderButton:hover {
+    background-color: #f0f0f0;
+    color: #2e2e2e;
+}
+
+.editorWidget {
+    position: absolute;
+    top: 0;
+    left: 42px;
+    padding: 4px;
+
+    background-color: #fff;
+    color: #323232;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    flex-direction: column;
+}
+
+.collapsed .editorWidget {
+    visibility: hidden;
+}
+
+.title {
+    background: #3a3a3a;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    padding: 4px;
+}
+
+
+.label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.editorWidget textarea {
+    height: 200px;
+    width: 300px;
+
+    min-height: 200px;
+    min-width: 200px;
+}
+
+.editorWidget input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.editorWidget textarea, .editorWidget input {
+    border: 1px solid darkgray;
+    padding: 4px;
+    border-radius: 2px;
+}
+
+.editorWidget textarea:focus, .editorWidget input:focus {
+    outline: none;
+}

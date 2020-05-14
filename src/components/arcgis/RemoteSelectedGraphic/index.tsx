@@ -57,6 +57,7 @@ export const RemoteSelectedGraphic = (props: IRemoteSelectedGraphicProps) => {
         type: "simple-fill",
         color: [color.r, color.g, color.b, 0.1],
         outline: {
+          type: "simple-line",
           color: [color.r, color.g, color.b],
           width: 1,
           style: "short-dot"
