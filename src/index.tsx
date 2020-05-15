@@ -20,12 +20,15 @@ import {pointerStore, modelStore, viewportStore, participantStore, chatStore, ba
 import {getDemoId} from "./utils/example-id.js";
 import 'mobx-react-lite/batchingForReactDom';
 
+const url = new URL(window.location.href);
+const username = url.searchParams.get("username");
+
 // TODO move this into the app component using an effect.
 const demoId = getDemoId();
 const connectionManager = new ConnectionManager(demoId, viewportStore, pointerStore, basemapStore, modelStore, participantStore, chatStore);
 
 ArcGisLoader.init()
-  .then(() => connectionManager.connect("michael"))
+  .then(() => connectionManager.connect(username || "Unknown"))
   .then(() => {
     ReactDOM.render(
       <GeoSketch/>

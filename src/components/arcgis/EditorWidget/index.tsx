@@ -28,9 +28,14 @@ export const EditorWidget = observer(() => {
     const g = formattingStore.graphics[0];
     const adapter = GraphicAdapter.getAdapter(g);
     const description = adapter.getDescriptionAttribute();
+    const title = adapter.getTitleAttribute();
 
     const setDescription = (value: string) => {
       g.setAttribute("description", value);
+    };
+
+    const setTitle = (value: string) => {
+      g.setAttribute("title", value);
     };
 
     const toggle = () => {
@@ -47,11 +52,15 @@ export const EditorWidget = observer(() => {
         <div className={styles.editorWidget}>
           <div className={styles.title}>Edit Feature Details</div>
 
-          <div className={styles.label}>Title</div>
-          <input/>
+          <div className={styles.titleInput}>
+            <div className={styles.label}>Title</div>
+            <SharedTextArea stringModel={title} onChange={setTitle}/>
+          </div>
 
-          <div className={styles.label}>Description</div>
-          <SharedTextArea stringModel={description} onChange={setDescription}/>
+          <div className={styles.descriptionInput}>
+            <div className={styles.label}>Description</div>
+            <SharedTextArea stringModel={description} onChange={setDescription}/>
+          </div>
         </div>
       </div>
     );

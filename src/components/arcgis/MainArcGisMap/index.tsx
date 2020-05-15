@@ -33,7 +33,6 @@ export const MainArcGisMap = observer(() => {
   const [previousBasemap, setPreviousBasemap] = useState<any>(null);
 
   useEffect(() => {
-
     const map = new esri.Map({
       basemap: new esri.Basemap({
         portalItem: {
@@ -51,7 +50,7 @@ export const MainArcGisMap = observer(() => {
 
     view.when(() => {
       setView(view);
-    });
+    }).catch(e => console.log(e));
 
     const pointerCallback = rateLimitWithCancel((event) => {
       const point = view.toMap({x: event.x, y: event.y});

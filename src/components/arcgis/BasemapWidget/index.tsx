@@ -21,9 +21,7 @@ export interface IBasemapWidgetProps {
 export const BasemapWidget = (props: IBasemapWidgetProps) => {
   const {view} = props;
 
-
   useEffect(() => {
-
     const basemapGallery = new esri.widgets.BasemapGallery({
       view: view,
       container: document.createElement("div")

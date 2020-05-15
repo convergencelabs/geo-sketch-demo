@@ -18,9 +18,9 @@ import {ViewportStore} from "../stores/ViewportStore";
 import {ParticipantStore} from "../stores/ParticipantStore";
 import {ChatStore} from "../stores/ChatStore";
 
-Convergence.configureLogging({
-  root: LogLevel.SILENT
-});
+// Convergence.configureLogging({
+//   root: LogLevel.SILENT
+// });
 
 export class ConnectionManager {
   constructor(private demoId: string,

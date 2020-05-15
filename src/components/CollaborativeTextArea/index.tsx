@@ -43,6 +43,18 @@ export const SharedTextArea = (props: ICollaborativeTextarea) => {
     textarea.selectionStart = 0;
     textarea.selectionEnd = 0;
 
+    textarea.addEventListener("blur", () => {
+      if (localReference.isShared()) {
+        localReference.unshare();
+      }
+    });
+
+    textarea.addEventListener("focus", () => {
+      sendLocalSelection();
+      if (!localReference.isShared()) {
+        localReference.share();
+      }
+    });
 
     // Create the editor and set up two way data binding.
     const textEditor = new CollaborativeTextArea({
@@ -100,7 +112,6 @@ export const SharedTextArea = (props: ICollaborativeTextarea) => {
     });
 
     sendLocalSelection();
-    localReference.share();
 
     const newReference = stringModel.events().subscribe( (e) => {
       if (e instanceof RemoteReferenceCreatedEvent && e.reference.key() === "selection") {

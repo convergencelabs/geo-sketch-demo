@@ -71,11 +71,20 @@
     margin-top: 10px;
 }
 
-.editorWidget textarea {
+
+.descriptionInput textarea {
     height: 200px;
     width: 300px;
 
     min-height: 200px;
+    min-width: 200px;
+}
+
+.titleInput textarea {
+    height: 50px;
+    width: 300px;
+
+    min-height: 50px;
     min-width: 200px;
 }
 
