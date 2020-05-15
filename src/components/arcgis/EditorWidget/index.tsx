@@ -12,19 +12,13 @@
 import React, {useState} from 'react';
 import styles from "./styles.module.css";
 import {observer} from "mobx-react";
-import MapView from "esri/views/MapView";
 import {useStores} from "../../../stores/stores";
 import {SharedTextArea} from "../../CollaborativeTextArea";
 import {GraphicAdapter} from "../../../utils/GraphicAdapter";
 import {faChevronLeft, faEdit} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-
-export interface IEditorWidgetProps {
-  view: MapView;
-}
-
-export const EditorWidget = observer((props: IEditorWidgetProps) => {
+export const EditorWidget = observer(() => {
 
   const {formattingStore} = useStores();
 

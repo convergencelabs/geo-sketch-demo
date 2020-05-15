@@ -148,7 +148,7 @@ export const MainArcGisMap = observer(() => {
       <RemoteSelectionLayer mapView={view}/>
       <SketchWidget view={view}/>
       <FormattingWidget/>
-      <EditorWidget view={view}/>
+      <EditorWidget />
       <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/>
     </React.Fragment> : null;
 

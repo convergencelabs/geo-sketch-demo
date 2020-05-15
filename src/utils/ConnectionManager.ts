@@ -9,7 +9,7 @@
  *  if it was not provided.
  */
 
-import {ChatRoom, Convergence} from "@convergence/convergence";
+import {ChatRoom, Convergence, LogLevel} from "@convergence/convergence";
 import {PointerStore} from "../stores/PointerStore";
 import {BasemapStore} from "../stores/BasemapStore";
 import {GeoSketchDemoConfig} from "../constants/config";
@@ -18,9 +18,9 @@ import {ViewportStore} from "../stores/ViewportStore";
 import {ParticipantStore} from "../stores/ParticipantStore";
 import {ChatStore} from "../stores/ChatStore";
 
-// Convergence.configureLogging({
-//   root: LogLevel.DEBUG
-// });
+Convergence.configureLogging({
+  root: LogLevel.SILENT
+});
 
 export class ConnectionManager {
   constructor(private demoId: string,

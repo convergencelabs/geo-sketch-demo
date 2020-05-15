@@ -57,33 +57,14 @@ export class ModelStore {
     this._selectionReference.set([]);
     this._selectionReference.share();
 
-    this.model.on(RealTimeModel.Events.REFERENCE, e => {
-      const re = e as RemoteReferenceCreatedEvent;
-      if (re.reference.key() !== "selection") {
-        return;
+    this.model.events().subscribe(re => {
+      if (re instanceof RemoteReferenceCreatedEvent && re.reference.key() === "selection") {
+        this._handleNewReference(re.reference as ElementReference);
       }
-
-      const ref = re.reference;
-      const refSub = ref.events().subscribe(e => {
-        if (e instanceof ReferenceSetEvent && e.src instanceof ElementReference) {
-          const selected = e.src.values() as RealTimeObject[];
-          const remoteSelection = new RemoteSelection(e.src.user(), e.src.sessionId(), selected);
-          this.setRemoteSelection(e.src.sessionId(), remoteSelection);
-        } else if (e instanceof ReferenceClearedEvent) {
-          this.removeRemoteSelection(e.src.sessionId());
-        } else if (e instanceof ReferenceDisposedEvent) {
-          this.removeRemoteSelection(e.src.sessionId());
-          refSub.unsubscribe();
-        }
-      });
     });
 
     model.references({key: "selection"}).forEach(r => {
-      const selected = r.values() as RealTimeObject[];
-      if (!r.isLocal()) {
-        const remoteSelection = new RemoteSelection(r.user(), r.sessionId(), selected);
-        this.setRemoteSelection(r.sessionId(), remoteSelection);
-      }
+      this._handleNewReference(r as ElementReference);
     });
   }
 
@@ -91,6 +72,33 @@ export class ModelStore {
   public setLocalSelection(selection: RealTimeObject[]): void {
     if (this._selectionReference) {
       this._selectionReference?.set(selection);
+    }
+  }
+
+  private _setReference(ref: ElementReference) {
+    const selected = ref.values() as RealTimeObject[];
+    const remoteSelection = new RemoteSelection(ref.user(), ref.sessionId(), selected);
+    this.setRemoteSelection(ref.sessionId(), remoteSelection);
+  }
+
+  private _handleNewReference(ref: ElementReference): void {
+    if (ref.isLocal()) {
+      return;
+    }
+
+    const refSub = ref.events().subscribe(e => {
+      if (e instanceof ReferenceSetEvent && e.src instanceof ElementReference) {
+        this._setReference(ref as ElementReference);
+      } else if (e instanceof ReferenceClearedEvent) {
+        this.removeRemoteSelection(e.src.sessionId());
+      } else if (e instanceof ReferenceDisposedEvent) {
+        this.removeRemoteSelection(e.src.sessionId());
+        refSub.unsubscribe();
+      }
+    });
+
+    if (ref.isSet()) {
+      this._setReference(ref as ElementReference);
     }
   }
 }
