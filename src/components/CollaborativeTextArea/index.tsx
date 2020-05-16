@@ -120,7 +120,9 @@ export const SharedTextArea = (props: ICollaborativeTextarea) => {
     });
 
     return () => {
-      localReference.unshare();
+      if (!localReference.isDisposed()) {
+        localReference.dispose();
+      }
       newReference.unsubscribe();
       stringEvents.unsubscribe();
     }
