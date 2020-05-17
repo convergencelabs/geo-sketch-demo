@@ -9,7 +9,7 @@
  *  if it was not provided.
  */
 
-import React from "react";
+import React, {Context} from "react";
 import {PointerStore} from "./PointerStore";
 import {ModelStore} from "./ModelStore";
 import {ViewportStore} from "./ViewportStore";
@@ -28,7 +28,18 @@ export const chatStore = new ChatStore();
 export const formattingStore = new FormattingStore();
 export const sketchStore = new SketchStore();
 
-export const storesContext = React.createContext({
+export interface IStores {
+  viewportStore: ViewportStore;
+  pointerStore: PointerStore;
+  sketchStore: SketchStore;
+  basemapStore: BasemapStore;
+  modelStore: ModelStore;
+  participantStore: ParticipantStore;
+  chatStore: ChatStore;
+  formattingStore: FormattingStore;
+}
+
+export const storesContext: Context<IStores> = React.createContext({
   viewportStore,
   pointerStore,
   sketchStore,

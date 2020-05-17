@@ -10,40 +10,26 @@
  */
 
 import {ChatRoom, Convergence, LogLevel} from "@convergence/convergence";
-import {PointerStore} from "../stores/PointerStore";
-import {BasemapStore} from "../stores/BasemapStore";
 import {GeoSketchDemoConfig} from "../constants/config";
-import {ModelStore} from "../stores/ModelStore";
-import {ViewportStore} from "../stores/ViewportStore";
-import {ParticipantStore} from "../stores/ParticipantStore";
-import {ChatStore} from "../stores/ChatStore";
-import {SketchStore} from "../stores/SketchStore";
+import {IStores} from "../stores/stores";
 
 Convergence.configureLogging({
   root: LogLevel.WARN
 });
 
 export class ConnectionManager {
-  constructor(private demoId: string,
-              private viewportStore: ViewportStore,
-              private pointerStore: PointerStore,
-              private sketchStore: SketchStore,
-              private basemapStore: BasemapStore,
-              private modelStore: ModelStore,
-              private participantStore: ParticipantStore,
-              private chatStore: ChatStore,
-              ) {
+  constructor(private demoId: string, private stores: IStores) {
   }
 
   public async connect(displayName: string): Promise<void> {
     const domain = await Convergence.connectAnonymously(GeoSketchDemoConfig.domainUrl, displayName);
 
     const activity = await domain.activities().join(this.demoId);
-    this.pointerStore.setActivity(activity);
-    this.viewportStore.setActivity(activity);
-    this.basemapStore.setActivity(activity);
-    this.participantStore.setActivity(activity);
-    this.sketchStore.setActivity(activity);
+    this.stores.pointerStore.setActivity(activity);
+    this.stores.viewportStore.setActivity(activity);
+    this.stores.basemapStore.setActivity(activity);
+    this.stores.participantStore.setActivity(activity);
+    this.stores.sketchStore.setActivity(activity);
 
     const model = await domain.models().openAutoCreate({
       collection: "maps",
@@ -55,7 +41,7 @@ export class ConnectionManager {
       },
       ephemeral: true
     });
-    this.modelStore.setModel(model);
+    this.stores.modelStore.setModel(model);
 
     const roomId = await domain.chat().create({
       id: this.demoId,
@@ -66,7 +52,7 @@ export class ConnectionManager {
 
     const room = (await domain.chat().join(roomId)) as ChatRoom;
 
-    this.chatStore.setChatRoom(room);
+    this.stores.chatStore.setChatRoom(room);
   }
 }
 
