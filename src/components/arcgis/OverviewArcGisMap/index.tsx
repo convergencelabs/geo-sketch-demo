@@ -19,7 +19,7 @@ import {observer} from "mobx-react";
 
 export const OverviewArcGisMap = observer(() => {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const { viewportStore, basemapStore } = useStores();
+  const {viewportStore, basemapStore} = useStores();
   const [open, setOpen] = useState(true);
   const [view, setView] = useState<MapView | null>(null);
 
@@ -34,7 +34,8 @@ export const OverviewArcGisMap = observer(() => {
 
     const view = new esri.views.MapView({
       map: map,
-      container: mapRef.current!
+      center: [-30, 26],
+      container: mapRef.current!,
     });
 
     view.ui.components = [];
@@ -42,11 +43,11 @@ export const OverviewArcGisMap = observer(() => {
     // The only way to disable navigation is to block the events.
     // So we disable the lot of them here.
 
-    view.on("drag", function(event) {
+    view.on("drag", function (event) {
       event.stopPropagation();
     });
 
-    view.on("key-down", function(event) {
+    view.on("key-down", function (event) {
       const prohibitedKeys = ["+", "-", "Shift", "_", "="];
       const keyPressed = event.key;
       if (prohibitedKeys.indexOf(keyPressed) !== -1) {
@@ -54,23 +55,24 @@ export const OverviewArcGisMap = observer(() => {
       }
     });
 
-    view.on("mouse-wheel", function(event) {
+    view.on("mouse-wheel", function (event) {
       event.stopPropagation();
     });
 
-    view.on("double-click", function(event) {
+    view.on("double-click", function (event) {
       event.stopPropagation();
     });
 
-    view.on("drag", ["Shift"], function(event) {
+    view.on("drag", ["Shift"], function (event) {
       event.stopPropagation();
     });
 
-    view.on("drag", ["Shift", "Control"], function(event) {
+    view.on("drag", ["Shift", "Control"], function (event) {
       event.stopPropagation();
     });
 
     view.when(() => {
+
       setView(view);
     });
 

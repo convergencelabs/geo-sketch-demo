@@ -45,8 +45,8 @@ export const MainArcGisMap = observer(() => {
     const view = new esri.views.MapView({
       map: map,  // References a Map instance
       container: mapRef.current!,
-      center: [0, 0],
-      zoom: 4
+      center: [-30, 26],
+      zoom: 3
     });
 
     view.when(() => {

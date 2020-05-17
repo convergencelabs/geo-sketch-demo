@@ -11,13 +11,15 @@
 
 .opened .map {
     position: absolute;
-    height: 200px;
-    width: 200px;
-    bottom: 0;
-    right: 0;
+    height: 350px;
+    width: 500px;
+    bottom: -71px;
+    right: -100px;
 
     border: 1px solid black;
     border-right: none;
+
+    transform: scale(0.6);
 }
 
 .opened .map:global(.esri-view) :global(.esri-view-surface--inset-outline:focus::after) {
@@ -41,8 +43,8 @@
 }
 
 .opened .toggle {
-    bottom: 184px;
-    right: 173px;
+    bottom: 193px;
+    right: 273px;
     transform: rotate(-45deg);
 }
 
