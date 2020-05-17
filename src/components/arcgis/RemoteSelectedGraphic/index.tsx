@@ -49,6 +49,7 @@ export const RemoteSelectedGraphic = (props: IRemoteSelectedGraphicProps) => {
   useEffect(() => {
     let selectionGraphic: Graphic | null = null;
     let geometryHandle: any;
+    let zoomHandle: any;
 
     if (graphic.geometry.extent !== null) {
       const geometry = createOutline(graphic, 5, mapView);
@@ -72,6 +73,12 @@ export const RemoteSelectedGraphic = (props: IRemoteSelectedGraphicProps) => {
           selectionGraphic.geometry = createOutline(graphic, 5, mapView);
         }
       });
+
+      zoomHandle = esri.core.watchUtils.watch(props.mapView, "zoom", () => {
+        if (selectionGraphic) {
+          selectionGraphic.geometry = createOutline(graphic, 5, mapView);
+        }
+      });
     }
 
     return () => {
@@ -80,6 +87,10 @@ export const RemoteSelectedGraphic = (props: IRemoteSelectedGraphicProps) => {
       }
       if (geometryHandle) {
         geometryHandle.remove();
+      }
+
+      if (zoomHandle) {
+        zoomHandle.remove();
       }
     }
     // eslint-disable-next-line

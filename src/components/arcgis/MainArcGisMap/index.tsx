@@ -58,7 +58,7 @@ export const MainArcGisMap = observer(() => {
       const {longitude, latitude} = point;
 
       pointerStore.setLocalState({x: longitude, y: latitude});
-    }, 40);
+    }, 50);
 
     const moveHandle = view.on("pointer-move", pointerCallback.callback);
     const leaveHandle = view.on("pointer-leave", () => {
@@ -72,7 +72,7 @@ export const MainArcGisMap = observer(() => {
       const {xmin, xmax, ymin, ymax} = e;
       const extent = {xmin, xmax, ymin, ymax};
       viewportStore.setLocalState(extent);
-    }, 40);
+    }, 50);
     const extentHandle = esri.core.watchUtils.watch(view, "extent", extentCallback.callback);
 
     const basemapHandle = esri.core.watchUtils.watch(view.map, "basemap", () => {

@@ -20,6 +20,7 @@ import Graphic from "esri/Graphic"
 import Sketch from "esri/widgets/Sketch";
 import {createUUID} from "../../../utils/uuid";
 import {reactColorToEsriColor} from "../../../utils/color-util";
+import {rateLimit} from "../../../utils/rateLimit";
 
 export interface ISketchWidgetProps {
   view: MapView;
@@ -82,6 +83,10 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         layer.add(graphic);
       };
 
+      const sendSketch = rateLimit((sketchGeom) => {
+        sketchStore.setLocalState(sketchGeom);
+      }, 50);
+
       const features = model.elementAt("features") as RealTimeObject;
 
       features.forEach((f: RealTimeElement, id?: string) => {
@@ -124,7 +129,7 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
           bindGraphic(layer, graphic, id, rte as RealTimeObject);
         } else if (e.state === "active") {
           const sketchGeom = e.graphic.geometry.toJSON();
-          sketchStore.setLocalState(sketchGeom);
+          sendSketch(sketchGeom);
         }
       });
 
