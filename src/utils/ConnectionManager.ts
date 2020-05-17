@@ -17,6 +17,7 @@ import {ModelStore} from "../stores/ModelStore";
 import {ViewportStore} from "../stores/ViewportStore";
 import {ParticipantStore} from "../stores/ParticipantStore";
 import {ChatStore} from "../stores/ChatStore";
+import {SketchStore} from "../stores/SketchStore";
 
 Convergence.configureLogging({
   root: LogLevel.WARN
@@ -26,6 +27,7 @@ export class ConnectionManager {
   constructor(private demoId: string,
               private viewportStore: ViewportStore,
               private pointerStore: PointerStore,
+              private sketchStore: SketchStore,
               private basemapStore: BasemapStore,
               private modelStore: ModelStore,
               private participantStore: ParticipantStore,
@@ -41,6 +43,7 @@ export class ConnectionManager {
     this.viewportStore.setActivity(activity);
     this.basemapStore.setActivity(activity);
     this.participantStore.setActivity(activity);
+    this.sketchStore.setActivity(activity);
 
     const model = await domain.models().openAutoCreate({
       collection: "maps",

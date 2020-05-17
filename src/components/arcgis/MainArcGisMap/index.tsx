@@ -17,13 +17,14 @@ import MapView from "esri/views/MapView";
 import {rateLimitWithCancel} from "../../../utils/rateLimit";
 import {LatLongWidget} from "../LatLongWidget";
 import {SketchWidget} from "../SketchWidget";
-import {useStores} from "../../../stores/stores";
+import {sketchStore, useStores} from "../../../stores/stores";
 import {observer} from "mobx-react";
 import {ParticipantActionType} from "../../../models/ParticipantAction";
 import {RemoteSelectionLayer} from "../RemoteSelectionLayer";
 import {BasemapWidget} from "../BasemapWidget";
 import {FormattingWidget} from "../FormatingWidget";
 import {EditorWidget} from "../EditorWidget";
+import {RemoteSketchLayer} from "../RemoteSketchLayer";
 
 export const MainArcGisMap = observer(() => {
   const {pointerStore, viewportStore, participantStore, basemapStore} = useStores();
@@ -148,6 +149,7 @@ export const MainArcGisMap = observer(() => {
       <SketchWidget view={view}/>
       <FormattingWidget/>
       <EditorWidget />
+      <RemoteSketchLayer map={view.map} sketches={sketchStore.remoteState}/>
       <RemotePointerLayer map={view.map} pointers={pointerStore.remoteState}/>
     </React.Fragment> : null;
 

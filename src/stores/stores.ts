@@ -17,6 +17,7 @@ import {ParticipantStore} from "./ParticipantStore";
 import {ChatStore} from "./ChatStore";
 import {BasemapStore} from "./BasemapStore";
 import {FormattingStore} from "./FormattingStore";
+import {SketchStore} from "./SketchStore";
 
 export const pointerStore = new PointerStore();
 export const viewportStore = new ViewportStore();
@@ -24,11 +25,13 @@ export const basemapStore = new BasemapStore("f81bc478e12c4f1691d0d7ab6361f5a6")
 export const modelStore = new ModelStore();
 export const participantStore = new ParticipantStore();
 export const chatStore = new ChatStore();
-export const formattingStore = new FormattingStore()
+export const formattingStore = new FormattingStore();
+export const sketchStore = new SketchStore();
 
 export const storesContext = React.createContext({
   viewportStore,
   pointerStore,
+  sketchStore,
   basemapStore,
   modelStore,
   participantStore,

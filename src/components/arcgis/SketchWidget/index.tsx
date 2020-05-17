@@ -26,7 +26,7 @@ export interface ISketchWidgetProps {
 }
 
 export const SketchWidget = (props: ISketchWidgetProps) => {
-  const {modelStore, formattingStore} = useStores();
+  const {modelStore, formattingStore, sketchStore} = useStores();
   const {view} = props;
   const {model} = modelStore;
 
@@ -97,6 +97,10 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
       });
 
       sketch.on("create", e => {
+        if (e.state === "complete" || e.state === "cancel") {
+          sketchStore.clearLocalState();
+        }
+
         if (e.state === "complete") {
           const graphic = e.graphic;
 
@@ -118,6 +122,9 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
           const rte = features.set(id, json);
 
           bindGraphic(layer, graphic, id, rte as RealTimeObject);
+        } else if (e.state === "active") {
+          const sketchGeom = e.graphic.geometry.toJSON();
+          sketchStore.setLocalState(sketchGeom);
         }
       });
 
