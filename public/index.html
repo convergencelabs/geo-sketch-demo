@@ -10,6 +10,12 @@
 
     <script type="text/javascript" src="%PUBLIC_URL%/config.js"></script>
 
+    <script>
+        const base = GEO_SKETCH_DEMO_CONFIG.baseUrl;
+        window['base-href'] = base;
+        document.write(`<base href="${base}"/>`);
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta

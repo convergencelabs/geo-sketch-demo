@@ -15,6 +15,7 @@ echo "Checking required environment variables..."
 echo ""
 
 require_env_var "$CONVERGENCE_URL" "CONVERGENCE_URL"
+require_env_var "$BASE_URL" "BASE_URL"
 
 echo ""
 echo "All required environment variables are set.  Processing config file."
