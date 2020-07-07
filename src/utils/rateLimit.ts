@@ -9,10 +9,7 @@
  *  if it was not provided.
  */
 
-export interface CancelableRateLimitedFunction<T> {
-  callback: T;
-  cancel(): void;
-}
+export type CallbackCancel = () => void;
 
 export function eventsPerSecondToMillisecondInterval(eventsPerSecond: number): number {
   return 1000 / eventsPerSecond;
@@ -21,11 +18,11 @@ export function eventsPerSecondToMillisecondInterval(eventsPerSecond: number): n
 export function rateLimit<T extends (...args: any[]) => any>(this: any,
                                                              callback: T,
                                                              minIntervalMs: number): T {
-  return rateLimitWithCancel(callback, minIntervalMs).callback;
+  return rateLimitWithCancel(callback, minIntervalMs)[0];
 }
 
 export function rateLimitWithCancel<T extends (...args: any[]) => any>(
-  this: any, callback: T, minIntervalMs: number): CancelableRateLimitedFunction<T> {
+  this: any, callback: T, minIntervalMs: number): [T, CallbackCancel] {
 
   let lastEventTime: number = 0;
   let finalEventTimerId: any = null;
@@ -50,10 +47,6 @@ export function rateLimitWithCancel<T extends (...args: any[]) => any>(
     }
   } as T;
 
-  return {
-    callback: func,
-    cancel: () => {
-      clearTimeout(finalEventTimerId);
-    }
-  }
+  const cancel = () => clearTimeout(finalEventTimerId);
+  return [func, cancel];
 }

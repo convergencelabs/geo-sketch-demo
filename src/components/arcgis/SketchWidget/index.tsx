@@ -20,7 +20,7 @@ import Graphic from "esri/Graphic"
 import Sketch from "esri/widgets/Sketch";
 import {createUUID} from "../../../utils/uuid";
 import {reactColorToEsriColor} from "../../../utils/color-util";
-import {rateLimit} from "../../../utils/rateLimit";
+import {rateLimitWithCancel} from "../../../utils/rateLimit";
 
 export interface ISketchWidgetProps {
   view: MapView;
@@ -83,7 +83,7 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
         layer.add(graphic);
       };
 
-      const sendSketch = rateLimit((sketchGeom) => {
+      const [sendSketch, cancelSendSketch] = rateLimitWithCancel((sketchGeom) => {
         sketchStore.setLocalState(sketchGeom);
       }, 50);
 
@@ -103,6 +103,7 @@ export const SketchWidget = (props: ISketchWidgetProps) => {
 
       sketch.on("create", e => {
         if (e.state === "complete" || e.state === "cancel") {
+          cancelSendSketch();
           sketchStore.clearLocalState();
         }
 

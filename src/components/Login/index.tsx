@@ -42,10 +42,10 @@ export const Login = (props: ILoginProps) => {
         <span className={styles.name}>Convergence Geo Sketch</span>
       </div>
       <div className={styles.form}>
-        <label className={styles.label}>Username</label>
+        <label className={styles.label}>Display Name</label>
         <input id="username" value={username} onChange={onChange} onKeyDown={onKeyDown}/>
       </div>
-      <div className={styles.note}>(Note: Any username will work!)</div>
+      <div className={styles.note}>(Note: Any display name will work!)</div>
       <div className={styles.buttons}>
         <button className={styles.button} disabled={username === ""} onClick={onClick}>Login</button>
       </div>

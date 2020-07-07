@@ -31,6 +31,9 @@ export class ChatStore {
       })
       .then(result => {
         result.data.forEach(e => this.prependHistoryEntry(e));
+      })
+      .catch(e => {
+        console.error(e);
       });
 
     this._room.events().subscribe(e => {

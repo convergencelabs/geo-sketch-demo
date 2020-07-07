@@ -14,7 +14,7 @@ import styles from "./styles.module.css";
 import {esri} from "../../../utils/ArcGisLoader"
 import {RemotePointerLayer} from "../RemotePointerLayer";
 import MapView from "esri/views/MapView";
-import {rateLimitWithCancel} from "../../../utils/rateLimit";
+import {rateLimit, rateLimitWithCancel} from "../../../utils/rateLimit";
 import {LatLongWidget} from "../LatLongWidget";
 import {SketchWidget} from "../SketchWidget";
 import {sketchStore, useStores} from "../../../stores/stores";
@@ -53,27 +53,27 @@ export const MainArcGisMap = observer(() => {
       setView(view);
     }).catch(e => console.log(e));
 
-    const pointerCallback = rateLimitWithCancel((event) => {
+    const [pointerCallback, cancelPointer] = rateLimitWithCancel((event) => {
       const point = view.toMap({x: event.x, y: event.y});
       const {longitude, latitude} = point;
 
       pointerStore.setLocalState({x: longitude, y: latitude});
     }, 50);
 
-    const moveHandle = view.on("pointer-move", pointerCallback.callback);
+    const moveHandle = view.on("pointer-move", pointerCallback);
     const leaveHandle = view.on("pointer-leave", () => {
-      pointerCallback.cancel();
+      cancelPointer();
       pointerStore.clearLocalState();
     });
 
     view.ui.components = ["zoom"];
 
-    const extentCallback = rateLimitWithCancel((e) => {
+    const extentCallback = rateLimit((e) => {
       const {xmin, xmax, ymin, ymax} = e;
       const extent = {xmin, xmax, ymin, ymax};
       viewportStore.setLocalState(extent);
     }, 50);
-    const extentHandle = esri.core.watchUtils.watch(view, "extent", extentCallback.callback);
+    const extentHandle = esri.core.watchUtils.watch(view, "extent", extentCallback);
 
     const basemapHandle = esri.core.watchUtils.watch(view.map, "basemap", () => {
       const basemap = view.map.basemap;

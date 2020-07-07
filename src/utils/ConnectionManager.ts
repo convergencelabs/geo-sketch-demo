@@ -9,7 +9,7 @@
  *  if it was not provided.
  */
 
-import {ChatRoom, Convergence, LogLevel} from "@convergence/convergence";
+import {Chat, ChatRoom, Convergence, LogLevel} from "@convergence/convergence";
 import {GeoSketchDemoConfig} from "../constants/config";
 import {IStores} from "../stores/stores";
 
@@ -50,9 +50,15 @@ export class ConnectionManager {
       ignoreExistsError: true
     });
 
-    const room = (await domain.chat().join(roomId)) as ChatRoom;
-
-    this.stores.chatStore.setChatRoom(room);
+    domain
+      .chat()
+      .join(roomId)
+      .then((room: Chat) => {
+        this.stores.chatStore.setChatRoom(room as ChatRoom);
+      })
+      .catch(e => {
+        console.error("Error joining chat room", e);
+      });
   }
 }
 
