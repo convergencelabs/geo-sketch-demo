@@ -9,7 +9,13 @@
  *  if it was not provided.
  */
 
-import {Chat, ChatRoom, Convergence, LogLevel} from "@convergence/convergence";
+import {
+  Chat,
+  ChatRoom,
+  Convergence,
+  IActivityJoinOptions,
+  LogLevel
+} from "@convergence/convergence";
 import {GeoSketchDemoConfig} from "../constants/config";
 import {IStores} from "../stores/stores";
 
@@ -24,7 +30,10 @@ export class ConnectionManager {
   public async connect(displayName: string): Promise<void> {
     const domain = await Convergence.connectAnonymously(GeoSketchDemoConfig.domainUrl, displayName);
 
-    const activity = await domain.activities().join(this.demoId);
+    const options: IActivityJoinOptions = {
+      autoCreate:{ephemeral: true, worldPermissions: ["join", "view_state", "set_state"] }
+    };
+    const activity = await domain.activities().join("demo-geosketch", this.demoId, options);
     this.stores.pointerStore.setActivity(activity);
     this.stores.viewportStore.setActivity(activity);
     this.stores.basemapStore.setActivity(activity);

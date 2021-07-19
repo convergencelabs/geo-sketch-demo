@@ -10,7 +10,7 @@ require_env_var() {
   fi
 }
 
-echo "Convergence GeoSkecth Demo"
+echo "Convergence GeoSketch Demo"
 echo "Checking required environment variables..."
 echo ""
 
@@ -24,6 +24,6 @@ echo ""
 /usr/local/bin/confd -backend env --onetime
 
 echo ""
-echo "Starting Convergence GeoSkecth Demo"
+echo "Starting Convergence GeoSketch Demo"
 
 exec nginx -g "daemon off;"

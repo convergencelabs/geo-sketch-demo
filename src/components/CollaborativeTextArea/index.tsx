@@ -18,7 +18,7 @@ import {
   StringRemoveEvent
 } from "@convergence/convergence";
 import React, {useEffect, useRef} from "react";
-import "@convergence/html-text-collab-ext/css/html-text-collab-ext.css";
+import "@convergence/html-text-collab-ext/dist/css/html-text-collab-ext.css";
 import {colorAssigner} from "../../utils/color-util";
 import styles from "./styles.module.css";
 import {CollaborativeTextArea} from "@convergence/html-text-collab-ext";
