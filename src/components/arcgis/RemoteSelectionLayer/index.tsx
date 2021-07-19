@@ -17,11 +17,11 @@ import {useStores} from "../../../stores/stores";
 import {RemoteSelectedGraphics} from "../RemoteSelectedGraphics";
 import {observer} from "mobx-react";
 
-export interface IRemoteSelectionLayerProps<T> {
+export interface IRemoteSelectionLayerProps {
   mapView: MapView;
 }
 
-export const RemoteSelectionLayer = observer((props: IRemoteSelectionLayerProps<any>) => {
+export const RemoteSelectionLayer = observer((props: IRemoteSelectionLayerProps) => {
   const [selectionLayer, setSelectionLayer] = useState<GraphicsLayer | null>(null);
   const {modelStore} = useStores();
   const map = props.mapView.map;
