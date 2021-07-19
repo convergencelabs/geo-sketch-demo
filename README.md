@@ -1,9 +1,8 @@
-<div align="center">
-  <img alt="Convergence Logo" height="80" src="https://convergence.io/assets/img/convergence-logo.png" >
-</div>
+<img alt="Convergence Logo" height="75" src="https://convergence.io/assets/img/convergence-logo.png" >
 
 # Convergence GeoSketch Demo
-[![Build Status](https://travis-ci.org/convergencelabs/geo-sketch-demo.svg?branch=master)](https://travis-ci.org/convergencelabs/geo-sketch-demo)
+[![example workflow](https://github.com/convergencelabs/geo-sketch-demo/actions/workflows/build.yml/badge.svg)
+](https://github.com/convergencelabs/geo-sketch-demo/actions/workflows/build.yml)
 
 This demo application show how Convergence can be used to collaborate a GoeSpatial / geometric data. Major features include:
 
